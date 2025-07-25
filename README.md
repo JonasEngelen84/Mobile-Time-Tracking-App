@@ -3,8 +3,10 @@ Mobile Zeiterfassungs-App (Mockup)
 
 ✨ Projektbeschreibung
 Dieses Projekt ist eine modulare Desktop-Anwendung zur Erfassung, Speicherung und Verwaltung von Arbeitszeiten.
-Ziel ist es, eine einfache, lokale Zeiterfassungslösung zu bieten, die ohne externe Abhängigkeiten auskommt und sowohl Stoppuhr-basiertes Tracking als auch manuelle Eingaben unterstützt.
-Die Anwendung trennt bewusst Benutzerverwaltung, Zeitlogik, Formatierung und Datenspeicherung in klar strukturierte Module nach dem Prinzip "Separation of Concerns".
+Ziel ist es, eine einfache, lokale Zeiterfassungslösung zu bieten, die ohne externe Abhängigkeiten auskommt
+und sowohl Stoppuhr-basiertes Tracking als auch manuelle Eingaben unterstützt.
+Die Anwendung trennt bewusst Benutzerverwaltung, Zeitlogik, Formatierung und Datenspeicherung
+in klar strukturierte Module nach dem Prinzip "Separation of Concerns".
 ```
 ```
 🔧 Technologien
