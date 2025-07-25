@@ -56,7 +56,7 @@ class MainView(tk.Frame):
         # Start-Input + Button
         start_frame = tk.Frame(self)
         start_frame.pack(pady=(20, 5))
-        tk.Button(start_frame, text="Start", width=5, command=self._start).pack(side=tk.LEFT)
+        tk.Button(start_frame, text="Start", width=5, command=self._start, bg="green", fg="white").pack(side=tk.LEFT)
         self.start_eingabe = zeitfeld(start_frame)
         self.start_eingabe.pack(side=tk.LEFT, padx=(10, 0))
 
@@ -67,7 +67,7 @@ class MainView(tk.Frame):
         # Stopp-Input + Button
         stopp_frame = tk.Frame(self)
         stopp_frame.pack(pady=5)
-        tk.Button(stopp_frame, text="Stopp", width=5, command=self._stopp).pack(side=tk.LEFT)
+        tk.Button(stopp_frame, text="Stopp", width=5, command=self._stopp, bg="red", fg="white").pack(side=tk.LEFT)
         self.stopp_eingabe = zeitfeld(stopp_frame)
         self.stopp_eingabe.pack(side=tk.LEFT, padx=(10, 0))
 
