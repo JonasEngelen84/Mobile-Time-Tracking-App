@@ -2,9 +2,11 @@
 Mobile Zeiterfassungs-App (Mockup)
 
 ✨ Projektbeschreibung
-Dieses Projekt ist eine modulare Mobile-Anwendung zur Erfassung, Speicherung und Verwaltung von Arbeitszeiten.
-Ziel ist es, eine einfache, lokale Zeiterfassungslösung zu bieten, die ohne externe Abhängigkeiten auskommt
-und sowohl Stoppuhr-basiertes Tracking als auch manuelle Eingaben unterstützt.
+Dieses Projekt ist eine modulare Mobile-Anwendung zur Erfassung,
+Speicherung und Verwaltung von Arbeitszeiten.
+Ziel ist es, eine einfache, lokale Zeiterfassungslösung zu bieten,
+die ohne externe Abhängigkeiten auskommt und sowohl Stoppuhr-basiertes Tracking
+als auch manuelle Eingaben unterstützt.
 Die Anwendung trennt bewusst Benutzerverwaltung, Zeitlogik, Formatierung und Datenspeicherung
 in klar strukturierte Module nach dem Prinzip "Separation of Concerns".
 ```
@@ -90,14 +92,24 @@ Die Anwendung verwendet eine SQLite-Datenbank (zeiterfassung.db) mit zwei zentra
 🧾 Zusätzliche Themen
 
 1. Sichere Übermittlung der Daten:
-   Um Man-in-the-Middle-Angriffe und/oder Sniffing zu verhindern ist für jegliche Kommunikation zwischen Front-/ und Backend ist HTTPS (SSL/TLS) ist zwingend erforderlich. HTTPS is ein sicheres Protokoll zur Übertragung von Daten über das Internet. Es verschlüsselt die Kommunikation zwischen Client und Server über TLS/SSL, schützt also vor Mitlesen und Manipulation.
+   Um Man-in-the-Middle-Angriffe und/oder Sniffing zu verhindern ist für jegliche Kommunikation
+   zwischen Front-/ und Backend ist HTTPS (SSL/TLS) ist zwingend erforderlich.
+   HTTPS is ein sicheres Protokoll zur Übertragung von Daten über das Internet.
+   Es verschlüsselt die Kommunikation zwischen Client und Server über TLS/SSL,
+   schützt also vor Mitlesen und Manipulation.
 
-Außerdem ist eine Passwortsicherheit erforderlich. Passwörter werden lokal vor der Übertragung gehasht, z. B. mit SHA-256. Serverseitig wird das Passwort erneut gehasht und gegen gespeicherte Hashes geprüft.
+   Außerdem ist eine Passwortsicherheit erforderlich. Passwörter werden lokal vor der Übertragung gehasht,
+   z. B. mit SHA-256. Serverseitig wird das Passwort erneut gehasht und gegen gespeicherte Hashes geprüft.
 
-Für eine sichere, tokenbasierte Authentifizierung ist OAuth2 oder JWT einzusetzen.
+   Für eine sichere, tokenbasierte Authentifizierung ist OAuth2 oder JWT einzusetzen.
 
 2. API-Integration und Kommunikation mit der Datenbank:
-   Für die API-Integration würde ich einfache, klar benannte Endpunkte nutzen, z. B. login, start, stop, damit die Kommunikation zwischen Frontend und Backend übersichtlich bleibt. Die API würde im Backend Requests entgegennehmen, die Daten prüfen und dann an die passende Logik weiterleiten.
+   Für die API-Integration würde ich einfache, klar benannte Endpunkte nutzen, z. B. login, start, stop,
+   damit die Kommunikation zwischen Frontend und Backend übersichtlich bleibt.
+   Die API würde im Backend Requests entgegennehmen, die Daten prüfen und dann an die passende Logik weiterleiten.
 
-Die Kommunikation mit der Datenbank würde ich über klar getrennte Module oder Klassen lösen, z. B. eine Klasse für Benutzer und eine für Zeiteinträge. So bleibt der Code strukturiert, leichter testbar und man kann bei Bedarf später auf eine andere Datenbank umsteigen, ohne die ganze Logik neu schreiben zu müssen.
+   Die Kommunikation mit der Datenbank würde ich über klar getrennte Module oder Klassen lösen,
+   z. B. eine Klasse für Benutzer und eine für Zeiteinträge. So bleibt der Code strukturiert,
+   leichter testbar und man kann bei Bedarf später auf eine andere Datenbank umsteigen,
+   ohne die ganze Logik neu schreiben zu müssen.
 ```
