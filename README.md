@@ -32,7 +32,7 @@ Für die nächste Ausbaustufe sind folgende Erweiterungen geplant:
 •	Passwort-Hashing
 •	GUI-Verbesserung
 •	Unit Tests & CI/CD-Pipeline
-
+```
 📂 Project Struktur
 zeiterfassung/
 ├── interfaces/
@@ -57,7 +57,7 @@ zeiterfassung/
 ├── main.py              # Einstiegspunkt - initialisiert die GUI sowie die zentrale Ablaufsteuerung.
 ├── README.md            # Projektdokumentation (diese Datei)
 └── zeiterfassung.db     # SQLite-Datenbank (wird automatisch erstellt)
-
+```
 📄 Datenbankstruktur – SQLite
 Die Anwendung verwendet eine SQLite-Datenbank (zeiterfassung.db) mit zwei zentralen Tabellen:
 
