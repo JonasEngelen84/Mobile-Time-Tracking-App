@@ -14,24 +14,24 @@ class LoginView(tk.Frame):
     def _build_ui(self):
         tk.Label(self, text="Login", font=("Arial", 14, "bold")).pack(pady=10)
 
-        # --- Benutzername (Label + Entry) ---
+        # Benutzername (Label + Entry)
         benutzer_frame = tk.Frame(self)
         benutzer_frame.pack(pady=5)
-
         tk.Label(benutzer_frame, text="Benutzername:").pack()
         self.username_entry = tk.Entry(benutzer_frame, width=23)
         self.username_entry.pack()
 
-        # --- Passwort (Label + Entry) ---
+        # Passwort (Label + Entry)
         passwort_frame = tk.Frame(self)
         passwort_frame.pack(pady=5)
-
         tk.Label(passwort_frame, text="Passwort:").pack()
         self.password_entry = tk.Entry(passwort_frame, show="*", width=23)
         self.password_entry.pack()
 
-        # --- Buttons ---
+        # Login
         tk.Button(self, text="Login", width=19, command=self._login).pack(pady=15)
+
+        # Registrieren
         tk.Button(self, text="Neuen Benutzer erstellen", command=self.switch_to_register).pack()
 
     def _login(self):

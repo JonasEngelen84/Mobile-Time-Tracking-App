@@ -11,7 +11,7 @@ time_storage = TimeStorage()
 # Globale Zustände
 startzeit = None
 aktivitaet = None
-timer_running = [False]
+timer_laeuft = [False]
 
 def start_stoppuhr(aktivitaet_name, timer_label, btn_manuell):
     """
@@ -20,7 +20,7 @@ def start_stoppuhr(aktivitaet_name, timer_label, btn_manuell):
     global startzeit, aktivitaet
     startzeit = datetime.now()
     aktivitaet = aktivitaet_name
-    timer_running[0] = True
+    timer_laeuft[0] = True
 
     btn_manuell.config(state="disabled")
     timer_label.config(text="00:00:00", font=("Arial", 20, "bold"))
@@ -38,7 +38,7 @@ def stopp_stoppuhr(timer_label, btn_manuell, benutzername):
         print("⚠️ Keine aktive Stoppuhr.")
         return
 
-    timer_running[0] = False
+    timer_laeuft[0] = False
     ende = datetime.now()
     dauer = ende - startzeit
     dauer_text = dauer_formatierung(int(dauer.total_seconds()))
@@ -63,7 +63,7 @@ def update_stoppuhr(timer_label):
     """
     Aktualisiert die Zeit im Label jede Sekunde.
     """
-    if timer_running[0] and startzeit:
+    if timer_laeuft[0] and startzeit:
         diff = datetime.now() - startzeit
         timer_label.config(text=stoppuhr_formatierung(diff))
         timer_label.after(1000, lambda: update_stoppuhr(timer_label))
