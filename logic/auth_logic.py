@@ -21,6 +21,6 @@ def anmelden(benutzername: str, passwort: str) -> tuple[bool, str]:
     
     authentifiziert = user_storage.benutzer_authentifizieren(benutzername, passwort)
     if authentifiziert:
-        return True, "Login erfolgreich."
+        return True, ""
     else:
         return False, "Benutzername oder Passwort ist falsch."

@@ -41,7 +41,6 @@ class LoginView(tk.Frame):
         erfolg, meldung = anmelden(username, password)
 
         if erfolg:
-            messagebox.showinfo("Erfolg", meldung)
             self.login_successful_callback(username)
         else:
             messagebox.showerror("Login fehlgeschlagen", meldung)
