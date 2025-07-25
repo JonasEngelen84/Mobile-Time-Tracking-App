@@ -63,7 +63,7 @@ zeiterfassung/
 │   └── register_view.py # GUI-Logik der Register-Maske
 │
 ├── LICENSE.txt          # Lizenz
-├── main.py              # Einstiegspunkt - initialisiert die GUI sowie die zentrale Ablaufsteuerung.
+├── main.py              # Einstiegspunkt - initialisiert die GUI sowie die zentrale Ablaufsteuerung
 ├── README.md            # Projektdokumentation (diese Datei)
 └── zeiterfassung.db     # SQLite-Datenbank (wird automatisch erstellt)
 ```
