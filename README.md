@@ -36,27 +36,27 @@ Für die nächste Ausbaustufe sind folgende Erweiterungen geplant:
 📂 Project Struktur
 zeiterfassung/
 ├── interfaces/
-│   ├── time\_storage\_interface.py	# Abstraktes Interface für Zeiteintrags-Speicherung
-│   └── user\_storage\_interface.py	# Abstraktes Interface für Benutzerverwaltung
+│   ├── time_storage_interface.py    # Abstraktes Interface für Zeiteintrags-Speicherung
+│   └── user_storage_interface.py    # Abstraktes Interface für Benutzerverwaltung
 │
 ├── logic/
-│   ├── auth\_logic.py	# Implementierung der UserStorage mit SQLite (Login, Registrierung)
-│   ├── format\_logic.py	# Hilfsfunktionen zur Zeitformatierung & Validierung
-│   └── time\_logic.py	# Kernlogik: Start/Stopp der Zeiterfassung, manuelle Eingaben
+│   ├── auth_logic.py    # Implementierung der UserStorage mit SQLite (Login, Registrierung)
+│   ├── format_logic.py  # Hilfsfunktionen zur Zeitformatierung & Validierung
+│   └── time_logic.py    # Kernlogik: Start/Stopp der Zeiterfassung, manuelle Eingaben
 │
 ├── storage/
-│   ├── time\_storage.py 	# SQLite-basierte Speicherung der Zeiteinträge
-│   └── user\_storage.py 	# SQLite-basierte Speicherung der Benutzereinträge
+│   ├── time_storage.py  # SQLite-basierte Speicherung der Zeiteinträge
+│   └── user_storage.py  # SQLite-basierte Speicherung der Benutzereinträge
 │
 ├── views/
-│   ├── login\_view\.py 	# GUI-Logik der Login-Maske
-│   ├── main\_view\.py 	# GUI-Logik der Zeiterfassungs-Maske
-│   └── register\_view\.py                  	# GUI-Logik der Register-Maske
+│   ├── login_view.py    # GUI-Logik der Login-Maske
+│   ├── main_view.py     # GUI-Logik der Zeiterfassungs-Maske
+│   └── register_view.py # GUI-Logik der Register-Maske
 │
-├── LICENSE.txt	# Lizens
-├── main.py	# Einstiegspunkt - initialisiert die GUI sowie die zentrale Ablaufsteuerung.
-├── README.md	# Projektdokumentation (diese Datei)
-└── zeiterfassung.db                  	# SQLite-Datenbank (wird automatisch erstellt)
+├── LICENSE.txt          # Lizenz
+├── main.py              # Einstiegspunkt - initialisiert die GUI sowie die zentrale Ablaufsteuerung.
+├── README.md            # Projektdokumentation (diese Datei)
+└── zeiterfassung.db     # SQLite-Datenbank (wird automatisch erstellt)
 
 📄 Datenbankstruktur – SQLite
 Die Anwendung verwendet eine SQLite-Datenbank (zeiterfassung.db) mit zwei zentralen Tabellen:
