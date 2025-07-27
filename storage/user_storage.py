@@ -2,12 +2,13 @@ import sqlite3
 from interfaces.user_storage_interface import UserStorageInterface
 
 class UserStorage(UserStorageInterface):
+    """Verbindet sich mit der angegebenen SQLite-Datenbankdatei."""
     def __init__(self, db_datei="zeiterfassung.db"):
         self.conn = sqlite3.connect(db_datei)
         self._erstelle_tabelle()
 
-    def _erstelle_tabelle(self):
-        """Erstellt die Tabelle für Nutzer, falls sie nicht existiert."""
+    """Erstellt die Tabelle für Nutzer, falls sie nicht existiert."""
+    def _erstelle_tabelle(self):        
         cursor = self.conn.cursor()
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS nutzer (
@@ -18,11 +19,11 @@ class UserStorage(UserStorageInterface):
         """)
         self.conn.commit()
 
-    def benutzer_speichern(self, benutzername: str, passwort: str) -> bool:
-        """
+    """
         Speichert einen neuen Benutzer.
         Gibt True zurück, wenn erfolgreich, False wenn Benutzername bereits existiert.
         """
+    def benutzer_speichern(self, benutzername: str, passwort: str) -> bool:        
         try:
             cursor = self.conn.cursor()
             cursor.execute("""
@@ -35,14 +36,19 @@ class UserStorage(UserStorageInterface):
             # Benutzername existiert bereits
             return False
 
-    def benutzer_authentifizieren(self, benutzername: str, passwort: str) -> bool:
-        """Überprüft, ob Benutzername und Passwort übereinstimmen."""
+    """Überprüft, ob Benutzername und Passwort übereinstimmen."""
+    def benutzer_authentifizieren(self, benutzername: str, passwort: str) -> bool:        
         cursor = self.conn.cursor()
         cursor.execute("""
             SELECT id FROM nutzer WHERE benutzername = ? AND passwort = ?
         """, (benutzername, passwort))
         return cursor.fetchone() is not None
 
+    """
+    Destruktor – wird aufgerufen, wenn das Objekt gelöscht wird.
+    Schließt die Verbindung zur SQLite-Datenbank, um Speicher freizugeben
+    und Datenbankressourcen sauber freizuschalten.
+    """
     def __del__(self):
         self.conn.close()
 

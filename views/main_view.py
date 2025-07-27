@@ -1,15 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
-from logic.time_logic import (
-    start_stoppuhr, stopp_stoppuhr, manuelle_eingaben_bestätigung
-)
+from commands.zeiterfassungs_commands import (start_stoppuhr, stopp_stoppuhr, manuelle_eingaben_bestätigung, uebersicht_anzeigen)
 
+"""Hauptansicht nach Login. Zeiterfassung durch Start/Stopp oder manuelle Eingabe."""
 class MainView(tk.Frame):
-    """
-    Hauptansicht nach Login. Zeiterfassung durch Start/Stopp oder manuelle Eingabe.
-    """
-
     def __init__(self, master, username, logout_callback):
         super().__init__(master)
         self.master = master
@@ -56,7 +50,18 @@ class MainView(tk.Frame):
         # Start-Input + Button
         start_frame = tk.Frame(self)
         start_frame.pack(pady=(20, 5))
-        tk.Button(start_frame, text="Start", width=5, command=self._start, bg="green", fg="white").pack(side=tk.LEFT)
+        tk.Button(
+            start_frame,
+            text="Start",
+            width=5,
+            bg="green",
+            fg="white",
+            command=lambda: start_stoppuhr(
+                aktivitaet_name=self.aktivitaet.get(),
+                timer_label=self.timer_label,
+                btn_manuell=self.btn_manuell
+            )
+        ).pack(side=tk.LEFT)
         self.start_eingabe = zeitfeld(start_frame)
         self.start_eingabe.pack(side=tk.LEFT, padx=(10, 0))
 
@@ -67,44 +72,41 @@ class MainView(tk.Frame):
         # Stopp-Input + Button
         stopp_frame = tk.Frame(self)
         stopp_frame.pack(pady=5)
-        tk.Button(stopp_frame, text="Stopp", width=5, command=self._stopp, bg="red", fg="white").pack(side=tk.LEFT)
+        tk.Button(
+            stopp_frame,
+            text="Stopp",
+            width=5,
+            bg="red",
+            fg="white",
+            command=lambda: stopp_stoppuhr(
+                timer_label=self.timer_label,
+                btn_manuell=self.btn_manuell,
+                benutzername=self.username
+            )
+        ).pack(side=tk.LEFT)        
         self.stopp_eingabe = zeitfeld(stopp_frame)
         self.stopp_eingabe.pack(side=tk.LEFT, padx=(10, 0))
 
         # Manuelle Bestätigung
-        self.btn_manuell = tk.Button(self, text="Manuelle Bestätigung", width=25, command=self._manuell)
+        self.btn_manuell = tk.Button(
+            self,
+            text="Manuelle Bestätigung",
+            width=25,
+                command=lambda: self.timer_label.config(
+                text=manuelle_eingaben_bestätigung(
+                    start_str=self.start_eingabe.get(),
+                    stopp_str=self.stopp_eingabe.get(),
+                    aktivitaet=self.aktivitaet.get(),
+                    timer_label=self.timer_label,
+                    benutzername=self.username
+                )
+            )
+        )        
         self.btn_manuell.pack(pady=5)
 
         # Übersicht öffnen
-        self.btn_uebersicht = tk.Button(self, text="Übersicht öffnen", width=25, command=self._uebersicht_anzeigen)
+        self.btn_uebersicht = tk.Button(self, text="Übersicht öffnen", width=25, command=uebersicht_anzeigen)
         self.btn_uebersicht.pack(pady=5)
 
         # Logout
         tk.Button(self, text="Logout", width=25, command=self.logout_callback).pack(pady=5)
-
-    def _start(self):
-        start_stoppuhr(
-            aktivitaet_name=self.aktivitaet.get(),
-            timer_label=self.timer_label,
-            btn_manuell=self.btn_manuell
-        )
-
-    def _stopp(self):
-        stopp_stoppuhr(
-            timer_label=self.timer_label,
-            btn_manuell=self.btn_manuell,
-            benutzername=self.username
-        )
-
-    def _manuell(self):
-        result = manuelle_eingaben_bestätigung(
-            start_str=self.start_eingabe.get(),
-            stopp_str=self.stopp_eingabe.get(),
-            aktivitaet=self.aktivitaet.get(),
-            timer_label=self.timer_label,
-            benutzername=self.username
-        )
-        self.timer_label.config(text=result)
-
-    def _uebersicht_anzeigen(self):
-        messagebox.showinfo("Übersicht", "In Bearbeitung.")

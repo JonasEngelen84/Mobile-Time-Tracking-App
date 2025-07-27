@@ -4,6 +4,10 @@ from views.register_view import RegisterView
 from views.main_view import MainView
 
 class Application(tk.Tk):
+    """
+    Hauptanwendungsklasse für die Zeiterfassungs-GUI.
+    Verwaltet den Wechsel zwischen Login-, Register- und MainView.
+    """    
     def __init__(self):
         super().__init__()
         self.title("Zeiterfassung mit Login")
@@ -13,6 +17,10 @@ class Application(tk.Tk):
         self.zeige_login_view()
 
     def zeige_login_view(self):
+        """
+        Zeigt die Login-Oberfläche.
+        Wird aufgerufen beim Start oder nach Logout.
+        """
         if self.current_view:
             self.current_view.destroy()
         self.current_view = LoginView(
@@ -23,6 +31,10 @@ class Application(tk.Tk):
         self.current_view.pack(fill="both", expand=True)
 
     def zeige_register_view(self):
+        """
+        Zeigt die Registrierungs-Oberfläche.
+        Wird aufgerufen, wenn der Benutzer auf "Registrieren" klickt.
+        """
         if self.current_view:
             self.current_view.destroy()
         self.current_view = RegisterView(
@@ -32,6 +44,10 @@ class Application(tk.Tk):
         self.current_view.pack(fill="both", expand=True)
 
     def zeige_main_view(self, username):
+        """
+        Zeigt die Hauptansicht zur Zeiterfassung.
+        Wird aufgerufen nach erfolgreichem Login.
+        """
         if self.current_view:
             self.current_view.destroy()
         self.current_view = MainView(
@@ -41,6 +57,7 @@ class Application(tk.Tk):
         )
         self.current_view.pack(fill="both", expand=True)
 
+"""Einstiegspunkt der Anwendung"""
 if __name__ == "__main__":
     app = Application()
     app.mainloop()

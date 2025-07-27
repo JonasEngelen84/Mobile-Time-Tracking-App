@@ -1,11 +1,12 @@
 from datetime import datetime
 from storage.time_storage import TimeStorage
+from tkinter import messagebox
 from logic.format_logic import dauer_formatierung, stoppuhr_formatierung, konvertiere_zeitformat
 
 # Konstante
 DATETIME_FORMAT = "%d.%m.%Y %H:%M"
 
-# Speicher-Inst anz
+# Speicher-Instanz
 time_storage = TimeStorage()
 
 # Globale Zustände
@@ -13,10 +14,8 @@ startzeit = None
 aktivitaet = None
 timer_laeuft = [False]
 
+"""Startet die Zeiterfassung mit der aktuellen Uhrzeit."""
 def start_stoppuhr(aktivitaet_name, timer_label, btn_manuell):
-    """
-    Startet die Zeiterfassung mit der aktuellen Uhrzeit.
-    """
     global startzeit, aktivitaet
     startzeit = datetime.now()
     aktivitaet = aktivitaet_name
@@ -28,10 +27,8 @@ def start_stoppuhr(aktivitaet_name, timer_label, btn_manuell):
     print(f"🟢 Start: {aktivitaet} um {startzeit.strftime(DATETIME_FORMAT)}")
     update_stoppuhr(timer_label)
 
+"""Stoppt die Zeiterfassung und speichert den Eintrag."""
 def stopp_stoppuhr(timer_label, btn_manuell, benutzername):
-    """
-    Stoppt die Zeiterfassung und speichert den Eintrag.
-    """
     global startzeit, aktivitaet
 
     if not startzeit:
@@ -59,19 +56,16 @@ def stopp_stoppuhr(timer_label, btn_manuell, benutzername):
     print(f"🔴 Stopp: {aktivitaet} – Dauer: {dauer_text}")
     startzeit = None
 
+"""Aktualisiert die Zeit im Label jede Sekunde."""
 def update_stoppuhr(timer_label):
-    """
-    Aktualisiert die Zeit im Label jede Sekunde.
-    """
+    
     if timer_laeuft[0] and startzeit:
         diff = datetime.now() - startzeit
         timer_label.config(text=stoppuhr_formatierung(diff))
         timer_label.after(1000, lambda: update_stoppuhr(timer_label))
 
+"""Verarbeitet manuelle Eingabezeiten, prüft und speichert."""
 def manuelle_eingaben_bestätigung(start_str: str, stopp_str: str, aktivitaet: str, timer_label, benutzername) -> str:
-    """
-    Verarbeitet manuelle Eingabezeiten, prüft und speichert.
-    """
     start = konvertiere_zeitformat(start_str)
     stopp = konvertiere_zeitformat(stopp_str)
 
@@ -100,3 +94,6 @@ def manuelle_eingaben_bestätigung(start_str: str, stopp_str: str, aktivitaet: s
 
     print(f"ℹ️ Manuelle Eingabe: {aktivitaet}, Dauer: {dauer_text}")
     return f"Dauer: {dauer_text}"
+
+def uebersicht_anzeigen():
+        messagebox.showinfo("Übersicht", "In Bearbeitung.")
