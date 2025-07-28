@@ -2,7 +2,7 @@
 Mobile Time Tracking App
 
 ✨ Project Description
-This project is a modular mobile application for recording, storing, and managing working hours.
+This project is a modular application for recording, storing, and managing working hours.
 Goal is to provide a simple, local time tracking solution (using register & login) that operates
 without external dependencies and supports both stopwatch-based tracking and manual time entries.
 The application deliberately separates user management, time logic, formatting, and data storage
