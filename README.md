@@ -1,5 +1,5 @@
 ```
-Mobile Time Tracking App
+Time Tracking App
 
 ✨ Project Description
 This project is a modular application for recording, storing, and managing working hours.
