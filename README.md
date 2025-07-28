@@ -30,7 +30,6 @@ into clearly structured modules following the "Separation of Concerns" principle
 ```
 🚧 Planned Extensions
 The next development stage includes the following planned features:
-• Expansion into a mobile app
 • Overview of already recorded times
 • Export of recorded times as a work hours report (PDF)
 • Transport encryption (HTTPS)
