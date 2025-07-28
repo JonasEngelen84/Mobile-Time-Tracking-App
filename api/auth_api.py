@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from commands.auth_commands import anmelden, registrieren
+from Befehle.auth_befehle import anmelden, registrieren
 
 app = Flask(__name__)
 
@@ -14,7 +14,7 @@ def login():
 
 
 @app.route("/register", methods=["POST"])
-def register():
+def registrieren():
     daten = request.json
     benutzer = daten.get("benutzer")
     passwort = daten.get("passwort")

@@ -1,5 +1,5 @@
 import sqlite3
-from interfaces.time_storage_interface import TimeStorageInterface
+from schnittstellen.zeiterfassungs_speicher_schnittstelle import TimeStorageInterface
 
 class TimeStorage(TimeStorageInterface):
     """Verbindet sich mit der angegebenen SQLite-Datenbankdatei."""

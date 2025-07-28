@@ -1,7 +1,7 @@
 from datetime import datetime
-from storage.time_storage import TimeStorage
+from speicher.zeiterfassungs_speicher import TimeStorage
 from tkinter import messagebox
-from logic.format_logic import dauer_formatierung, stoppuhr_formatierung, konvertiere_zeitformat
+from logik.formatierungs_logik import dauer_formatierung, stoppuhr_formatierung, konvertiere_zeitformat
 
 # Konstante
 DATETIME_FORMAT = "%d.%m.%Y %H:%M"

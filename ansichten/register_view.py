@@ -1,5 +1,5 @@
 import tkinter as tk
-from commands.auth_commands import registrieren
+from Befehle.auth_befehle import registrieren
 
 """Ansicht für Benutzer-Registrierung. Nutzt auth_logic zur Benutzererstellung."""
 class RegisterView(tk.Frame):    

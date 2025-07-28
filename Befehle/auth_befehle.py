@@ -1,4 +1,4 @@
-from storage.user_storage import UserStorage
+from speicher.benutzer_speicher import UserStorage
 from tkinter import messagebox
 
 user_storage = UserStorage()
