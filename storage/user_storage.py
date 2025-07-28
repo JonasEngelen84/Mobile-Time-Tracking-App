@@ -1,14 +1,14 @@
 import sqlite3
-from schnittstellen.benutzer_speicher_schnittstelle import UserStorageInterface
+from interfaces.user_storage_interface import UserStorageInterface
 
 class UserStorage(UserStorageInterface):
     """Verbindet sich mit der angegebenen SQLite-Datenbankdatei."""
-    def __init__(self, db_datei="zeiterfassung.db"):
-        self.conn = sqlite3.connect(db_datei)
-        self._erstelle_tabelle()
+    def __init__(self, db_file="zeiterfassung.db"):
+        self.conn = sqlite3.connect(db_file)
+        self._create_table()
 
     """Erstellt die Tabelle für Nutzer, falls sie nicht existiert."""
-    def _erstelle_tabelle(self):        
+    def _create_table(self):        
         cursor = self.conn.cursor()
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS nutzer (
@@ -23,13 +23,13 @@ class UserStorage(UserStorageInterface):
         Speichert einen neuen Benutzer.
         Gibt True zurück, wenn erfolgreich, False wenn Benutzername bereits existiert.
         """
-    def benutzer_speichern(self, benutzername: str, passwort: str) -> bool:        
+    def save_user(self, username: str, password: str) -> bool:        
         try:
             cursor = self.conn.cursor()
             cursor.execute("""
                 INSERT INTO nutzer (benutzername, passwort)
                 VALUES (?, ?)
-            """, (benutzername, passwort))
+            """, (username, password))
             self.conn.commit()
             return True
         except sqlite3.IntegrityError:
@@ -37,11 +37,11 @@ class UserStorage(UserStorageInterface):
             return False
 
     """Überprüft, ob Benutzername und Passwort übereinstimmen."""
-    def benutzer_authentifizieren(self, benutzername: str, passwort: str) -> bool:        
+    def auth_user(self, username: str, password: str) -> bool:        
         cursor = self.conn.cursor()
         cursor.execute("""
             SELECT id FROM nutzer WHERE benutzername = ? AND passwort = ?
-        """, (benutzername, passwort))
+        """, (username, password))
         return cursor.fetchone() is not None
 
     """

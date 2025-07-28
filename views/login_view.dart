@@ -5,33 +5,33 @@ import 'package:flutter/material.dart'; // Flutter-Bibliothek für grafische Obe
 // - Einen Button zum Einloggen (verbindet sich mit der API)
 // - Einen Button zum Wechseln zur Registrierungsansicht
 // Die tatsächliche Login-Logik (API-Aufruf) wird in einer anderen Datei ausgeführt.
-class LoginAnsicht extends StatefulWidget {  
-  final void Function(String benutzername, String passwort) beiLogin; // Wird aufgerufen, wenn der Nutzer sich einloggen möchte.
-  final VoidCallback zuRegistrierungWechseln; // Wird aufgerufen, wenn der Nutzer zur Registrierungsansicht wechseln möchte.
+class LoginView extends StatefulWidget {  
+  final void Function(String benutzername, String passwort) onLogin; // Wird aufgerufen, wenn der Nutzer sich einloggen möchte.
+  final VoidCallback onRegister; // Wird aufgerufen, wenn der Nutzer zur Registrierungsansicht wechseln möchte.
 
   // Konstruktor
-  const LoginAnsicht({
+  const LoginView({
     Key? key, // Optionaler Schlüssel für das Widget (z. B. für Tests oder eindeutige Identifikation in der Baumstruktur)
-    required this.beiLogin, // Wird beim Klick auf "Einloggen" ausgeführt. Erwartet zwei Strings: Benutzername und Passwort.
-    required this.zuRegistrierungWechseln,  // Wird beim Klick auf "Registrieren" ausgeführt. Parameterlos (VoidCallback).
+    required this.onLogin, // Wird beim Klick auf "Einloggen" ausgeführt. Erwartet zwei Strings: Benutzername und Passwort.
+    required this.onRegister,  // Wird beim Klick auf "Registrieren" ausgeführt. Parameterlos (VoidCallback).
   }) : super(key: key); // Ruft den Konstruktor der Oberklasse (StatefulWidget) auf und übergibt den optionalen Schlüssel
 
   // Diese Methode ist notwendig bei einem StatefulWidget. (Flutter-Widget, das sich zur Laufzeit verändern kann.)
-  // Sie erstellt und verbindet den Zustand (State) des Widgets. In diesem Fall heißt die Zustandsklasse _LoginAnsichtZustand.
+  // Sie erstellt und verbindet den Zustand (State) des Widgets. In diesem Fall heißt die Zustandsklasse _LoginViewState.
   //Flutter verwendet diesen Zustand, um:
   // Eingaben zu verwalten, das UI zu aktualisieren und den Lebenszyklus zu steuern (z. B. initState, dispose etc.).
   @override
-  State<LoginAnsicht> createState() => _LoginAnsichtZustand();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-// Der Zustand (State) der LoginAnsicht.
+// Der Zustand (State) der LoginView.
 // Hier werden Eingabefelder verwaltet und die Oberfläche aktualisiert.
-class _LoginAnsichtZustand extends State<LoginAnsicht> {
+class _LoginViewState extends State<LoginView> {
   // Eingabefeld für den Benutzernamen
-  final TextEditingController _benutzernameEingabe = TextEditingController();
+  final TextEditingController _usernameEntry = TextEditingController();
 
   // Eingabefeld für das Passwort (mit verdeckter Eingabe)
-  final TextEditingController _passwortEingabe = TextEditingController();
+  final TextEditingController _passwordEntry = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class _LoginAnsichtZustand extends State<LoginAnsicht> {
           children: [
             // Eingabefeld: Benutzername
             TextField(
-              controller: _benutzernameEingabe,
+              controller: _usernameEntry,
               decoration: const InputDecoration(
                 labelText: "Benutzername",
                 border: OutlineInputBorder(),
@@ -58,7 +58,7 @@ class _LoginAnsichtZustand extends State<LoginAnsicht> {
 
             // Eingabefeld: Passwort (verdeckte Eingabe)
             TextField(
-              controller: _passwortEingabe,
+              controller: _passwordEntry,
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: "Passwort",
@@ -70,9 +70,9 @@ class _LoginAnsichtZustand extends State<LoginAnsicht> {
             // Login-Button: Übergibt Benutzername + Passwort an die Login-Logik
             ElevatedButton(
               onPressed: () {
-                widget.beiLogin(
-                  _benutzernameEingabe.text.trim(),
-                  _passwortEingabe.text.trim(),
+                widget.onLogin(
+                  _usernameEntry.text.trim(),
+                  _passwordEntry.text.trim(),
                 );
               },
               child: const Text("Einloggen"),
@@ -82,7 +82,7 @@ class _LoginAnsichtZustand extends State<LoginAnsicht> {
 
             // Wechsel zur Registrierung
             TextButton(
-              onPressed: widget.zuRegistrierungWechseln,
+              onPressed: widget.onRegister,
               child: const Text("Noch kein Konto? Jetzt registrieren."),
             ),
           ],
@@ -94,8 +94,8 @@ class _LoginAnsichtZustand extends State<LoginAnsicht> {
   @override
   void dispose() {
     // Eingabefelder aufräumen, wenn die Ansicht geschlossen wird
-    _benutzernameEingabe.dispose();
-    _passwortEingabe.dispose();
+    _usernameEntry.dispose();
+    _passwordEntry.dispose();
     super.dispose();
   }
 }

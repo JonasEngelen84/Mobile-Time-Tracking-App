@@ -2,53 +2,53 @@ import 'package:flutter/material.dart';  // Flutter-Bibliothek für grafische Ob
 import '../api/auth_api.dart';           // Importiere meine Datei, die mit der API kommuniziert
 
 // Diese Ansicht zeigt das Registrierungsformular an
-class RegistrierungsAnsicht extends StatefulWidget {
-  const RegistrierungsAnsicht({super.key}); // Konstruktor
+class RegisterView extends StatefulWidget {
+  const RegisterView({super.key}); // Konstruktor
 
   // Diese Methode ist notwendig bei einem StatefulWidget. (Flutter-Widget, das sich zur Laufzeit verändern kann.)
   // Sie erstellt und verbindet den Zustand (State) des Widgets. In diesem Fall heißt die Zustandsklasse _LoginAnsichtZustand.
   //Flutter verwendet diesen Zustand, um:
   // Eingaben zu verwalten, das UI zu aktualisieren und den Lebenszyklus zu steuern (z. B. initState, dispose etc.).
   @override
-  State<RegistrierungsAnsicht> createState() => _RegistrierungsAnsichtZustand();
+  State<RegisterView> createState() => _RegisterViewState();
 }
 
-// Das ist die Klasse, die den aktuellen Zustand der Registrierungsansicht verwaltet
-class _RegistrierungsAnsichtZustand extends State<RegistrierungsAnsicht> {
+// Das ist die Klasse, die den aktuellen Zustand der RegisterView verwaltet
+class _RegisterViewState extends State<RegisterView> {
   // Diese Textfelder speichern den eingegebenen Text
-  final TextEditingController _benutzernameController = TextEditingController();
-  final TextEditingController _passwortController = TextEditingController();
-  final TextEditingController _passwortWiederholenController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _repeatpasswordController = TextEditingController();
 
   // Wird verwendet, um zu zeigen, ob gerade geladen wird
-  bool _ladeVorgangAktiv = false;
+  bool _activeLoading = false;
 
   // Diese Variable speichert die Rückmeldung (z. B. "Erfolgreich registriert")
-  String _meldung = '';
+  String _report = '';
 
   // Diese Methode wird aufgerufen, wenn der Benutzer auf „Registrieren“ klickt
   Future<void> _benutzerRegistrieren() async {
     // Trim entfernt Leerzeichen am Anfang und Ende
-    final benutzername = _benutzernameController.text.trim();
-    final passwort = _passwortController.text.trim();
-    final passwortWdh = _passwortWiederholenController.text.trim();
+    final benutzername = _usernameController.text.trim();
+    final passwort = d.text.trim();
+    final passwortWdh = _repeatpasswordController.text.trim();
 
     // Wenn ein Feld leer ist → Hinweis anzeigen
     if (benutzername.isEmpty || passwort.isEmpty || passwortWdh.isEmpty) {
-      setState(() => _meldung = 'Bitte alle Felder ausfüllen.');
+      setState(() => _report = 'Bitte alle Felder ausfüllen.');
       return;
     }
 
     // Wenn die beiden Passwörter nicht gleich sind → Hinweis anzeigen
     if (passwort != passwortWdh) {
-      setState(() => _meldung = 'Passwörter stimmen nicht überein.');
+      setState(() => _report = 'Passwörter stimmen nicht überein.');
       return;
     }
 
     // Ladeanzeige aktivieren
     setState(() {
-      _ladeVorgangAktiv = true;
-      _meldung = '';
+      _activeLoading = true;
+      _report = '';
     });
 
     // An die API senden → registrieren() aus auth_api.dart wird aufgerufen
@@ -56,8 +56,8 @@ class _RegistrierungsAnsichtZustand extends State<RegistrierungsAnsicht> {
 
     // Ergebnis anzeigen und Ladeanzeige abschalten
     setState(() {
-      _ladeVorgangAktiv = false;
-      _meldung = rueckmeldung;
+      _activeLoading = false;
+      _report = rueckmeldung;
     });
   }
 
@@ -73,20 +73,20 @@ class _RegistrierungsAnsichtZustand extends State<RegistrierungsAnsicht> {
           children: [
             // Eingabefeld für den Benutzernamen
             TextField(
-              controller: _benutzernameController,
+              controller: _usernameController,
               decoration: const InputDecoration(labelText: 'Benutzername'),
             ),
 
             // Eingabefeld für das Passwort
             TextField(
-              controller: _passwortController,
+              controller: d,
               decoration: const InputDecoration(labelText: 'Passwort'),
               obscureText: true, // Passwort nicht im Klartext anzeigen
             ),
 
             // Eingabefeld für die Wiederholung des Passworts
             TextField(
-              controller: _passwortWiederholenController,
+              controller: _repeatpasswordController,
               decoration: const InputDecoration(labelText: 'Passwort wiederholen'),
               obscureText: true,
             ),
@@ -94,7 +94,7 @@ class _RegistrierungsAnsichtZustand extends State<RegistrierungsAnsicht> {
             const SizedBox(height: 20), // Abstand
 
             // Wenn gerade geladen wird, zeige ein Ladesymbol – sonst den Button
-            _ladeVorgangAktiv
+            _activeLoading
                 ? const CircularProgressIndicator() // Ladeanzeige
                 : ElevatedButton(
                     onPressed: _benutzerRegistrieren,
@@ -105,7 +105,7 @@ class _RegistrierungsAnsichtZustand extends State<RegistrierungsAnsicht> {
 
             // Zeige Rückmeldung (z. B. „Benutzer existiert bereits“)
             Text(
-              _meldung,
+              _report,
               style: const TextStyle(color: Colors.red),
             ),
           ],
