@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from commands.time_commands.time_commands import (start_stoppuhr, stopp_stoppuhr, manuelle_eingaben_bestätigung, uebersicht_anzeigen)
+from commands.time_commands.time_commands import (start_stopwatch, stop_stopwatch, confirm_manual_entry, show_overview)
 
 """Hauptansicht nach Login. Zeiterfassung durch Start/Stopp oder manuelle Eingabe."""
 class MainView(tk.Frame):
@@ -56,10 +56,10 @@ class MainView(tk.Frame):
             width=5,
             bg="green",
             fg="white",
-            command=lambda: start_stoppuhr(
-                aktivitaet_name=self.aktivitaet.get(),
+            command=lambda: start_stopwatch(
+                activity_name=self.aktivitaet.get(),
                 timer_label=self.timer_label,
-                btn_manuell=self.btn_manuell
+                btn_manual=self.btn_manuell
             )
         ).pack(side=tk.LEFT)
         self.start_eingabe = zeitfeld(start_frame)
@@ -78,10 +78,10 @@ class MainView(tk.Frame):
             width=5,
             bg="red",
             fg="white",
-            command=lambda: stopp_stoppuhr(
+            command=lambda: stop_stopwatch(
                 timer_label=self.timer_label,
-                btn_manuell=self.btn_manuell,
-                benutzername=self.username
+                btn_manual=self.btn_manuell,
+                username=self.username
             )
         ).pack(side=tk.LEFT)        
         self.stopp_eingabe = zeitfeld(stopp_frame)
@@ -93,19 +93,19 @@ class MainView(tk.Frame):
             text="Manuelle Bestätigung",
             width=25,
                 command=lambda: self.timer_label.config(
-                text=manuelle_eingaben_bestätigung(
+                text=confirm_manual_entry(
                     start_str=self.start_eingabe.get(),
-                    stopp_str=self.stopp_eingabe.get(),
-                    aktivitaet=self.aktivitaet.get(),
+                    stop_str=self.stopp_eingabe.get(),
+                    activity=self.aktivitaet.get(),
                     timer_label=self.timer_label,
-                    benutzername=self.username
+                    username=self.username
                 )
             )
         )        
         self.btn_manuell.pack(pady=5)
 
         # Übersicht öffnen
-        self.btn_uebersicht = tk.Button(self, text="Übersicht öffnen", width=25, command=uebersicht_anzeigen)
+        self.btn_uebersicht = tk.Button(self, text="Übersicht öffnen", width=25, command=show_overview)
         self.btn_uebersicht.pack(pady=5)
 
         # Logout

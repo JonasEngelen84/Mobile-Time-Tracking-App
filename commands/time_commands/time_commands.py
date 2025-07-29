@@ -15,20 +15,20 @@ activity = None
 timer_running = [False]
 
 """Startet die Zeiterfassung mit der aktuellen Uhrzeit."""
-def start_stopwatch(activity_name, timer_label, btn_manuel):
+def start_stopwatch(activity_name, timer_label, btn_manual):
     global start, activity
     start = datetime.now()
     activity = activity_name
     timer_running[0] = True
 
-    btn_manuel.config(state="disabled")
+    btn_manual.config(state="disabled")
     timer_label.config(text="00:00:00", font=("Arial", 20, "bold"))
 
     print(f"🟢 Start: {activity} um {start.strftime(DATETIME_FORMAT)}")
     update_stopwatch(timer_label)
 
 """Stopt die Zeiterfassung und speichert den entry."""
-def stop_stopwatch(timer_label, btn_manuel, username):
+def stop_stopwatch(timer_label, btn_manual, username):
     global start, activity
 
     if not start:
@@ -40,7 +40,7 @@ def stop_stopwatch(timer_label, btn_manuel, username):
     duration = end - start
     duration_text = duration_formatting(int(duration.total_seconds()))
 
-    btn_manuel.config(state="normal")
+    btn_manual.config(state="normal")
     timer_label.config(text=f"duration: {duration_text}", font=("Arial", 12, "bold"))
 
     duration_min = int(duration.total_seconds() // 60)

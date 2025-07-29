@@ -1,5 +1,5 @@
 import tkinter as tk
-from commands.auth_commands.auth_commands import anmelden
+from commands.auth_commands.auth_commands import login
 
 """Ansicht für Benutzer-Login. Nutzt auth_logic zur Benutzererstellung."""
 class LoginView(tk.Frame):
@@ -33,7 +33,7 @@ class LoginView(tk.Frame):
             self,
             text="Login",
             width=19,
-            command=lambda: anmelden(
+            command=lambda: login(
                 self.username_entry.get().strip(),
                 self.password_entry.get().strip(),
                 self.login_successful_callback  # z. B. zum Wechsel ins MainView

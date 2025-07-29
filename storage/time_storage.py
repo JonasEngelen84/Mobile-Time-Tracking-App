@@ -28,11 +28,11 @@ class TimeStorage(TimeStorageInterface):
             INSERT INTO zeiterfassung (aktivitaet, start, ende, dauer_min, benutzer) 
             VALUES (?, ?, ?, ?, ?)
         """, (
-            entry["aktivitaet"],
+            entry["activity"],
             entry["start"],
-            entry["ende"],
-            entry["dauer_min"],
-            entry["benutzer"]
+            entry["end"],
+            entry["duration_min"],
+            entry["user"]
         ))
         self.conn.commit()
 

@@ -1,5 +1,5 @@
 import tkinter as tk
-from commands.auth_commands.auth_commands import registrieren
+from commands.auth_commands.auth_commands import register
 
 """Ansicht für Benutzer-Registrierung. Nutzt auth_logic zur Benutzererstellung."""
 class RegisterView(tk.Frame):    
@@ -36,7 +36,7 @@ class RegisterView(tk.Frame):
 
         # Registrieren button
         tk.Button(self, text="Registrieren", width=19,
-          command=lambda: registrieren(
+          command=lambda: register(
               self.username_entry.get().strip(),
               self.password_entry.get().strip(),
               self.password_repeat_entry.get().strip(),
