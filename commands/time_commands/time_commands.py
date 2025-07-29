@@ -41,11 +41,11 @@ def stop_stopwatch(timer_label, btn_manual, username):
     duration_text = duration_formatting(int(duration.total_seconds()))
 
     btn_manual.config(state="normal")
-    timer_label.config(text=f"duration: {duration_text}", font=("Arial", 12, "bold"))
+    timer_label.config(text=f"dauer: {duration_text}", font=("Arial", 12, "bold"))
 
     duration_min = int(duration.total_seconds() // 60)
     entry = {
-        "activitaet": activity,
+        "aktivitaet": activity,
         "start": start.isoformat(),
         "ende": end.isoformat(),
         "dauer_min": duration_min,
@@ -53,7 +53,7 @@ def stop_stopwatch(timer_label, btn_manual, username):
     }
     time_storage.save(entry)
 
-    print(f"🔴 Stop: {activity} – duration: {duration_text}")
+    print(f"🔴 Stop: {activity} – dauer: {duration_text}")
     start = None
 
 """Aktualisiert die Zeit im Label jede Sekunde."""
@@ -84,7 +84,7 @@ def confirm_manual_entry(start_str: str, stop_str: str, activity: str, timer_lab
         timer_label.config(font=("Arial", 12, "bold"))
 
     entry = {        
-        "activitaet": activity,
+        "aktivitaet": activity,
         "start": start.isoformat(),
         "ende": stop.isoformat(),
         "dauer_min": duration_s // 60,
@@ -92,8 +92,8 @@ def confirm_manual_entry(start_str: str, stop_str: str, activity: str, timer_lab
     }
     time_storage.save(entry)
 
-    print(f"ℹ️ Manuelle Eingabe: {activity}, duration: {duration_text}")
-    return f"duration: {duration_text}"
+    print(f"ℹ️ Manuelle Eingabe: {activity}, dauer: {duration_text}")
+    return f"dauer: {duration_text}"
 
 def show_overview():
         messagebox.showinfo("Übersicht", "In Bearbeitung.")
