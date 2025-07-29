@@ -1,5 +1,5 @@
 import tkinter as tk
-from commands.auth_commands.auth_commands import login
+from backend.commands.auth_commands.auth_commands import login
 
 """Ansicht für Benutzer-Login. Nutzt auth_logic zur Benutzererstellung."""
 class LoginView(tk.Frame):

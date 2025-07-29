@@ -1,5 +1,5 @@
 import sqlite3
-from interfaces.user_storage_interface import UserStorageInterface
+from backend.interfaces.user_storage_interface import UserStorageInterface
 
 class UserStorage(UserStorageInterface):
     """Verbindet sich mit der angegebenen SQLite-Datenbankdatei."""
