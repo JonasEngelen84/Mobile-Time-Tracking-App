@@ -51,4 +51,3 @@ class UserStorage(UserStorageInterface):
     """
     def __del__(self):
         self.conn.close()
-

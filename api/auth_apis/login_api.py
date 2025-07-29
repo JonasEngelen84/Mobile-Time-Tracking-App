@@ -1,16 +1,15 @@
 from flask import Flask, request, jsonify
-from commands.auth_commands.auth_commands import register
+from commands.auth_commands.auth_commands import login as login_logic  # Alias vergeben
 
 app = Flask(__name__)
 
-@app.route("/register", methods=["POST"])
-def register():
+@app.route("/login", methods=["POST"])
+def login_route():
     data = request.json
     user = data.get("user")
     password = data.get("password")
-    password_wdh = data.get("password_wdh")
 
-    success, report = register(user, password, password_wdh)
+    success, report = login_logic(user, password)
     return jsonify({"success": success, "message": report})
 
 if __name__ == "__main__":

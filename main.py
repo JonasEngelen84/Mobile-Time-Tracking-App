@@ -1,7 +1,7 @@
 import tkinter as tk
-from views.login_view import LoginView
-from views.register_view import RegisterView
-from views.main_view import MainView
+from frontend.views.login_view import LoginView
+from frontend.views.register_view import RegisterView
+from frontend.views.main_view import MainView
 
 class Application(tk.Tk):
     """

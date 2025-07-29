@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart'; // Flutter-Bibliothek für grafische Oberfläche
+import '../api/auth_apis/login_api.dart';  // Zur Kommunikation mit API
 
-// Dies ist die Login-Oberfläche der App.
-// Sie zeigt zwei Eingabefelder (Benutzername und Passwort) sowie zwei Buttons:
+// Login-Oberfläche:
+// Zeigt zwei Eingabefelder (Benutzername und Passwort) sowie zwei Buttons:
 // - Einen Button zum Einloggen (verbindet sich mit der API)
-// - Einen Button zum Wechseln zur Registrierungsansicht
-// Die tatsächliche Login-Logik (API-Aufruf) wird in einer anderen Datei ausgeführt.
+// - Einen Button zum Wechseln zur Registrierungs-Oberfläche
+// Die tatsächliche Login-Logik (API-Aufruf) wird in "login_command.py" ausgeführt.
 class LoginView extends StatefulWidget {  
   final void Function(String benutzername, String passwort) onLogin; // Wird aufgerufen, wenn der Nutzer sich einloggen möchte.
   final VoidCallback onRegister; // Wird aufgerufen, wenn der Nutzer zur Registrierungsansicht wechseln möchte.
@@ -18,8 +19,7 @@ class LoginView extends StatefulWidget {
 
   // Diese Methode ist notwendig bei einem StatefulWidget. (Flutter-Widget, das sich zur Laufzeit verändern kann.)
   // Sie erstellt und verbindet den Zustand (State) des Widgets. In diesem Fall heißt die Zustandsklasse _LoginViewState.
-  //Flutter verwendet diesen Zustand, um:
-  // Eingaben zu verwalten, das UI zu aktualisieren und den Lebenszyklus zu steuern (z. B. initState, dispose etc.).
+  // Verwendung: Eingaben verwalten, UI aktualisieren und Lebenszyklus steuern (z. B. initState, dispose etc.).
   @override
   State<LoginView> createState() => _LoginViewState();
 }
@@ -27,11 +27,9 @@ class LoginView extends StatefulWidget {
 // Der Zustand (State) der LoginView.
 // Hier werden Eingabefelder verwaltet und die Oberfläche aktualisiert.
 class _LoginViewState extends State<LoginView> {
-  // Eingabefeld für den Benutzernamen
-  final TextEditingController _usernameEntry = TextEditingController();
-
-  // Eingabefeld für das Passwort (mit verdeckter Eingabe)
-  final TextEditingController _passwordEntry = TextEditingController();
+  // Speicherung der Eingaben
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +46,7 @@ class _LoginViewState extends State<LoginView> {
           children: [
             // Eingabefeld: Benutzername
             TextField(
-              controller: _usernameEntry,
+              controller: _usernameController,
               decoration: const InputDecoration(
                 labelText: "Benutzername",
                 border: OutlineInputBorder(),
@@ -58,7 +56,7 @@ class _LoginViewState extends State<LoginView> {
 
             // Eingabefeld: Passwort (verdeckte Eingabe)
             TextField(
-              controller: _passwordEntry,
+              controller: _passwordController,
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: "Passwort",
@@ -70,9 +68,9 @@ class _LoginViewState extends State<LoginView> {
             // Login-Button: Übergibt Benutzername + Passwort an die Login-Logik
             ElevatedButton(
               onPressed: () {
-                widget.onLogin(
-                  _usernameEntry.text.trim(),
-                  _passwordEntry.text.trim(),
+                loginUser(
+                  _usernameController.text.trim(),
+                  _passwordController.text.trim(),
                 );
               },
               child: const Text("Einloggen"),
@@ -94,8 +92,8 @@ class _LoginViewState extends State<LoginView> {
   @override
   void dispose() {
     // Eingabefelder aufräumen, wenn die Ansicht geschlossen wird
-    _usernameEntry.dispose();
-    _passwordEntry.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 }

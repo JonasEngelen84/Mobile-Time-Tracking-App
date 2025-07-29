@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';  // Flutter-Bibliothek für grafische Oberfläche
-import '../api/auth_api.dart';           // Importiere meine Datei, die mit der API kommuniziert
+import '../api/auth_apis/register_api.dart';  // Zur Kommunikation mit API
 
-// Diese Ansicht zeigt das Registrierungsformular an
+// Registrierungs-Oberfläche:
+// Zeigt drei Eingabefelder (Benutzername, Passwort und Passwort wiederholen) sowie zwei Buttons:
+// - Einen Button zum registrieren (verbindet sich mit der API)
+// - Einen Button zum Wechseln zur Login-Oberfläche
+// Die tatsächliche Registrierungs-Logik (API-Aufruf) wird in "register_command.py" ausgeführt.
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key}); // Konstruktor
 
   // Diese Methode ist notwendig bei einem StatefulWidget. (Flutter-Widget, das sich zur Laufzeit verändern kann.)
-  // Sie erstellt und verbindet den Zustand (State) des Widgets. In diesem Fall heißt die Zustandsklasse _LoginAnsichtZustand.
-  //Flutter verwendet diesen Zustand, um:
-  // Eingaben zu verwalten, das UI zu aktualisieren und den Lebenszyklus zu steuern (z. B. initState, dispose etc.).
+  // Sie erstellt und verbindet den Zustand (State) des Widgets. In diesem Fall heißt die Zustandsklasse _RegisterViewState.
+  // Verwendung: Eingaben verwalten, UI aktualisieren und Lebenszyklus steuern (z. B. initState, dispose etc.).
   @override
   State<RegisterView> createState() => _RegisterViewState();
 }
 
-// Das ist die Klasse, die den aktuellen Zustand der RegisterView verwaltet
+// Der Zustand (State) der RegisterView.
+// Hier werden Eingabefelder verwaltet und die Oberfläche aktualisiert.
 class _RegisterViewState extends State<RegisterView> {
-  // Diese Textfelder speichern den eingegebenen Text
+  // Speicherung der Eingaben
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repeatpasswordController = TextEditingController();
 
-  // Wird verwendet, um zu zeigen, ob gerade geladen wird
-  bool _activeLoading = false;
-
-  // Diese Variable speichert die Rückmeldung (z. B. "Erfolgreich registriert")
-  String _report = '';
+  bool _activeLoading = false;  // Wird verwendet, um zu zeigen, ob gerade geladen wird  
+  String _report = '';  // Diese Variable speichert die Rückmeldung (z. B. "Erfolgreich registriert")
 
   // Diese Methode wird aufgerufen, wenn der Benutzer auf „Registrieren“ klickt
   Future<void> _benutzerRegistrieren() async {
@@ -61,7 +62,6 @@ class _RegisterViewState extends State<RegisterView> {
     });
   }
 
-  // Hier wird die Oberfläche gebaut (Layout)
   @override
   Widget build(BuildContext context) {
     return Scaffold(
