@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
-from commands.auth_commands.auth_commands import register
+from services.auth_commands.auth_commands import register
 
 app = Flask(__name__)
 
+""" REST-API """
 @app.route("/register", methods=["POST"])
 def register():
     data = request.json

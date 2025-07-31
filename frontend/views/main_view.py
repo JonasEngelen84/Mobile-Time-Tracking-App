@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from backend.commands.time_commands.time_commands import (start_stopwatch, stop_stopwatch, confirm_manual_entry, show_overview)
+from backend.services.time_services import (start_stopwatch, stop_stopwatch, confirm_manual_entry, show_overview)
 
 """Hauptansicht nach Login. Zeiterfassung durch Start/Stopp oder manuelle Eingabe."""
 class MainView(tk.Frame):

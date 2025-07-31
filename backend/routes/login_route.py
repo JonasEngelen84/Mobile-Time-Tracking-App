@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
-from commands.auth_commands.auth_commands import login as login_logic  # Alias vergeben
+from services.auth_commands.auth_commands import login as login_logic  # Alias vergeben
 
 app = Flask(__name__)
 
+""" REST-API """
 @app.route("/login", methods=["POST"])
 def login_route():
     data = request.json

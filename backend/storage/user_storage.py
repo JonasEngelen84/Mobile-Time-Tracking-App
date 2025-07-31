@@ -7,7 +7,7 @@ class UserStorage(UserStorageInterface):
         self.conn = sqlite3.connect(db_file)
         self._create_table()
 
-    """Erstellt die Tabelle für Nutzer, falls sie nicht existiert."""
+    """Erstellt die Tabelle nutzer, falls sie nicht existiert."""
     def _create_table(self):        
         cursor = self.conn.cursor()
         cursor.execute("""
@@ -20,9 +20,9 @@ class UserStorage(UserStorageInterface):
         self.conn.commit()
 
     """
-        Speichert einen neuen Benutzer.
-        Gibt True zurück, wenn erfolgreich, False wenn Benutzername bereits existiert.
-        """
+    Speichert einen neuen Benutzer.
+    Gibt True zurück, wenn erfolgreich, False wenn Benutzername bereits existiert.
+    """
     def save_user(self, username: str, password: str) -> bool:        
         try:
             cursor = self.conn.cursor()
