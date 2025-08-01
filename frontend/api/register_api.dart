@@ -15,35 +15,36 @@ import 'package:http/http.dart' as http; // Für HTTP-Anfragen zum Backend
 ///
 /// Fehlerfall:
 /// - Wenn der Server nicht erfolgreich antwortet (z. B. kein 200er-Status), wird eine Exception geworfen.
-Future<Map<String, dynamic>> registerUser(
-  String username,
-  String password,
-  String passwordRepeat,
-) async {
-  // Die Adresse des Python-Backends
-  // Wenn du auf Android-Emulator arbeitest, nimm: http://10.0.2.2:5000
-  final url = Uri.parse("http://localhost:5000/register");
+Future<(bool, String)> registerUser(String username, String password, String passwordRepeat,) async {
+  if (username.isEmpty || password.isEmpty || passwordRepeat.isEmpty) {
+    return (false, "Alle Felder müssen ausgefüllt sein.");
+  }
 
-  // Sende eine POST-Anfrage an das Backend
-  final response = await http.post(
-    url,
-    headers: {
-      "Content-Type": "application/json", // Wir senden JSON-Daten
-    },
-    body: jsonEncode({
-      // Die eigentlichen Nutzerdaten, die wir an das Backend schicken
-      "user": username,
-      "password": password,
-      "password_repeat": passwordRepeat,
-    }),
-  );
+  if (password != passwordRepeat) {
+    return (false, "Passwörter stimmen nicht überein.");
+  }
 
-  // Wenn die Antwort vom Server erfolgreich war (HTTP-Status 200)
-  if (response.statusCode == 200) {
-    // Wandle die Antwort (JSON-Text) in eine Dart-Map um
-    return jsonDecode(response.body);
-  } else {
-    // Wenn etwas schiefläuft: Fehler werfen mit Statuscode
-    throw Exception("Registrierung fehlgeschlagen. Fehlercode: ${response.statusCode}");
+  try {
+    final response = await http.post(
+      Uri.parse("http://127.0.0.1:5000/api/auth/register"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "username": username,
+        "password": password,
+        "password_repeat": passwordRepeat,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final success = data["success"] ?? false;
+      final message = data["message"] ?? "Unbekannte Antwort";
+
+      return (success, message);
+    } else {
+      return (false, "Serverfehler (${response.statusCode})");
+    }
+  } catch (e) {
+    return (false, "Verbindungsfehler: $e");
   }
 }

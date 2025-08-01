@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify
-from services.auth_commands.auth_commands import login as login_logic  # Alias vergeben
+from flask import Blueprint, request, jsonify
+from backend.services.auth_services import login as login_logic
 
-app = Flask(__name__)
+login_blueprint = Blueprint("login", __name__)
 
 """ REST-API """
-@app.route("/login", methods=["POST"])
+@login_blueprint.route("/login", methods=["POST"])
 def login_route():
     data = request.json
     user = data.get("user")
@@ -13,5 +13,3 @@ def login_route():
     success, report = login_logic(user, password)
     return jsonify({"success": success, "message": report})
 
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)

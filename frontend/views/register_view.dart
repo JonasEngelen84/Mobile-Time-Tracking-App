@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';  // Flutter-Bibliothek für grafische Oberfläche
-import '../api/auth_apis/register_api.dart';  // Zur Kommunikation mit API
+import '../api/register_api.dart';  // Zur Kommunikation mit API
 
 // Registrierungs-Oberfläche:
 // Zeigt drei Eingabefelder (Benutzername, Passwort und Passwort wiederholen) sowie zwei Buttons:
@@ -7,7 +7,14 @@ import '../api/auth_apis/register_api.dart';  // Zur Kommunikation mit API
 // - Einen Button zum Wechseln zur Login-Oberfläche
 // Die tatsächliche Registrierungs-Logik (API-Aufruf) wird in "register_command.py" ausgeführt.
 class RegisterView extends StatefulWidget {
-  const RegisterView({super.key}); // Konstruktor
+  final VoidCallback onRegister;
+  final VoidCallback onCancel;
+
+  const RegisterView({
+    Key? key, // Optionaler Schlüssel für das Widget (z. B. für Tests oder eindeutige Identifikation in der Baumstruktur)
+    required this.onRegister, // Wird beim Klick auf "Registrieren" ausgeführt. Erwartet drei Strings: Benutzername, Passwort und Passwort wiederholen.
+    required this.onCancel, // Wird beim Klick auf "Zurück" ausgeführt. Parameterlos (VoidCallback).
+  }) : super(key: key); // Ruft den Konstruktor der Oberklasse (StatefulWidget) auf und übergibt den optionalen Schlüssel
 
   // Diese Methode ist notwendig bei einem StatefulWidget. (Flutter-Widget, das sich zur Laufzeit verändern kann.)
   // Sie erstellt und verbindet den Zustand (State) des Widgets. In diesem Fall heißt die Zustandsklasse _RegisterViewState.
@@ -30,18 +37,18 @@ class _RegisterViewState extends State<RegisterView> {
   // Diese Methode wird aufgerufen, wenn der Benutzer auf „Registrieren“ klickt
   Future<void> _benutzerRegistrieren() async {
     // Trim entfernt Leerzeichen am Anfang und Ende
-    final benutzername = _usernameController.text.trim();
-    final passwort = d.text.trim();
-    final passwortWdh = _repeatpasswordController.text.trim();
+    final username = _usernameController.text.trim();
+    final password = d.text.trim();
+    final passwordWdh = _repeatpasswordController.text.trim();
 
     // Wenn ein Feld leer ist → Hinweis anzeigen
-    if (benutzername.isEmpty || passwort.isEmpty || passwortWdh.isEmpty) {
+    if (username.isEmpty || password.isEmpty || passwordWdh.isEmpty) {
       setState(() => _report = 'Bitte alle Felder ausfüllen.');
       return;
     }
 
     // Wenn die beiden Passwörter nicht gleich sind → Hinweis anzeigen
-    if (passwort != passwortWdh) {
+    if (password != passwordWdh) {
       setState(() => _report = 'Passwörter stimmen nicht überein.');
       return;
     }
@@ -53,7 +60,7 @@ class _RegisterViewState extends State<RegisterView> {
     });
 
     // An die API senden → registrieren() aus auth_api.dart wird aufgerufen
-    final rueckmeldung = await registrieren(benutzername, passwort);
+    final rueckmeldung = await registrieren(username, password);
 
     // Ergebnis anzeigen und Ladeanzeige abschalten
     setState(() {
@@ -65,52 +72,79 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Registrieren')),
-
+      appBar: AppBar(title: const Text("Registrieren"), centerTitle: true),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Eingabefeld für den Benutzernamen
+            // Eingabefelder
             TextField(
               controller: _usernameController,
-              decoration: const InputDecoration(labelText: 'Benutzername'),
+              decoration: const InputDecoration(labelText: "Benutzername", border: OutlineInputBorder(),),
             ),
+            const SizedBox(height: 16),
 
-            // Eingabefeld für das Passwort
             TextField(
-              controller: d,
-              decoration: const InputDecoration(labelText: 'Passwort'),
-              obscureText: true, // Passwort nicht im Klartext anzeigen
-            ),
-
-            // Eingabefeld für die Wiederholung des Passworts
-            TextField(
-              controller: _repeatpasswordController,
-              decoration: const InputDecoration(labelText: 'Passwort wiederholen'),
+              controller: _passwordController,
               obscureText: true,
+              decoration: const InputDecoration(labelText: "Passwort", border: OutlineInputBorder(),),
             ),
+            const SizedBox(height: 16),
 
-            const SizedBox(height: 20), // Abstand
+            TextField(
+              controller: _passwordRepeatController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: "Passwort wiederholen", border: OutlineInputBorder(),),
+            ),
+            const SizedBox(height: 24),
 
-            // Wenn gerade geladen wird, zeige ein Ladesymbol – sonst den Button
-            _activeLoading
-                ? const CircularProgressIndicator() // Ladeanzeige
-                : ElevatedButton(
-                    onPressed: _benutzerRegistrieren,
-                    child: const Text('Registrieren'),
-                  ),
+            // Registrieren-Button
+            ElevatedButton(
+              onPressed: () async {
+                final username = _usernameController.text.trim();
+                final password = _passwordController.text.trim();
+                final passwordRepeat = _passwordRepeatController.text.trim();
 
-            const SizedBox(height: 10),
+                final (success, message) = await registerUser(username, password, passwordRepeat,);
 
-            // Zeige Rückmeldung (z. B. „Benutzer existiert bereits“)
-            Text(
-              _report,
-              style: const TextStyle(color: Colors.red),
+                if (success) {
+                  widget.onRegisterSuccess();
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Registrierung fehlgeschlagen"),
+                      content: Text(message),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text("OK"),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+              child: const Text("Registrieren"),
+            ),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: widget.onCancel,
+              child: const Text("Zurück zum Login"),
             ),
           ],
         ),
       ),
     );
   }
-}
+
+
+@override
+  void dispose() {
+    // Eingabefelder aufräumen, wenn die Ansicht geschlossen wird
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _repeatpasswordController.dispose();
+    super.dispose();
+  }

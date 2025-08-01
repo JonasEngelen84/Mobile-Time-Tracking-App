@@ -15,33 +15,31 @@ import 'package:http/http.dart' as http; // Für HTTP-Kommunikation mit dem Back
 ///
 /// Fehlerfall:
 /// - Wenn die Serverantwort nicht erfolgreich ist, wird eine Exception geworfen.
-Future<Map<String, dynamic>> loginUser(
-  String username,
-  String password,
-) async {
-  // URL des Backends
-  // Mit Android-Emulator => 10.0.2.2 (statt localhost)
-  final url = Uri.parse("http://localhost:5000/login");
+Future<(bool, String)> loginUser(String username, String password) async {
+  if (username.isEmpty || password.isEmpty) {
+    return (false, "Benutzername und Passwort dürfen nicht leer sein.");
+  }
 
-  // HTTP-POST-Anfrage senden
-  final response = await http.post(
-    url,
-    headers: {
-      "Content-Type": "application/json", // Daten als JSON senden
-    },
-    body: jsonEncode({
-      // Sende Benutzerdaten im JSON-Format
-      "user": username,
-      "password": password,
-    }),
-  );
+  try {
+    final response = await http.post(
+      Uri.parse("http://127.0.0.1:5000/api/auth/login"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "username": username,
+        "password": password,
+      }),
+    );
 
-  // Prüfe, ob die Antwort erfolgreich war
-  if (response.statusCode == 200) {
-    // Wandelt den JSON-Body in eine Dart-Map um
-    return jsonDecode(response.body);
-  } else {
-    // Bei Fehler: wirf eine Exception mit Statuscode
-    throw Exception("Login fehlgeschlagen. Fehlercode: ${response.statusCode}");
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final success = data["success"] ?? false;
+      final message = data["message"] ?? "Unbekannte Antwort";
+
+      return (success, message);
+    } else {
+      return (false, "Serverfehler (${response.statusCode})");
+    }
+  } catch (e) {
+    return (false, "Verbindungsfehler: $e");
   }
 }

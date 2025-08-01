@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart'; // Flutter-Bibliothek für grafische Oberfläche
-import '../api/auth_apis/login_api.dart';  // Zur Kommunikation mit API
+import '../api/login_api.dart';  // Zur Kommunikation mit API
 
 // Login-Oberfläche:
 // Zeigt zwei Eingabefelder (Benutzername und Passwort) sowie zwei Buttons:
@@ -67,11 +67,30 @@ class _LoginViewState extends State<LoginView> {
 
             // Login-Button: Übergibt Benutzername + Passwort an die Login-Logik
             ElevatedButton(
-              onPressed: () {
-                loginUser(
-                  _usernameController.text.trim(),
-                  _passwordController.text.trim(),
-                );
+              onPressed: () async {
+                final username = _usernameController.text.trim();
+                final password = _passwordController.text.trim();
+
+                final (success, message) = await loginUser(username, password);
+
+                if (success) {
+                  widget.onLogin(username, password); // ggf. Hauptseite laden
+                } else {
+                  // Fehlermeldung als Dialog anzeigen
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Login fehlgeschlagen"),
+                      content: Text(message),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text("OK"),
+                        ),
+                      ],
+                    ),
+                  );
+                }
               },
               child: const Text("Einloggen"),
             ),

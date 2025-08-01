@@ -1,18 +1,16 @@
-from flask import Flask, request, jsonify
-from services.auth_commands.auth_commands import register
+from flask import Blueprint, request, jsonify
+from backend.services.auth_services import register as register_logic
 
-app = Flask(__name__)
+register_blueprint = Blueprint("register", __name__)
 
 """ REST-API """
-@app.route("/register", methods=["POST"])
-def register():
+@register_blueprint.route("/register", methods=["POST"])
+def register_route():
     data = request.json
     user = data.get("user")
     password = data.get("password")
     password_repeat = data.get("password_repeat")
 
-    success, report = register(user, password, password_repeat)
+    success, report = register_logic(user, password, password_repeat)
     return jsonify({"success": success, "message": report})
 
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
