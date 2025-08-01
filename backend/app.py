@@ -1,63 +1,25 @@
-import tkinter as tk
-from frontend.views.login_view import LoginView
-from frontend.views.register_view import RegisterView
-from frontend.views.main_view import MainView
+from flask import Flask
+from backend.routes.login_route import login_blueprint
+from backend.routes.register_route import register_blueprint
 
-class Application(tk.Tk):
+def create_app():
     """
-    Hauptanwendungsklasse für die Zeiterfassungs-GUI.
-    Verwaltet den Wechsel zwischen Login-, Register- und MainView.
-    """    
-    def __init__(self):
-        super().__init__()
-        self.title("Zeiterfassung mit Login")
-        self.geometry("210x380")
-        self.resizable(False, False)
-        self.current_view = None
-        self.zeige_login_view()
+    Initialisiert und konfiguriert die Flask-Applikation (Backend).
+    Registriert alle Blueprints (also die API-Endpunkte für Login, Registrierung usw.)
+    """
+    app_instance = Flask(__name__)
 
-    def zeige_login_view(self):
-        """
-        Zeigt die Login-Oberfläche.
-        Wird aufgerufen beim Start oder nach Logout.
-        """
-        if self.current_view:
-            self.current_view.destroy()
-        self.current_view = LoginView(
-            master=self,
-            switch_to_register=self.zeige_register_view,
-            login_successful_callback=self.zeige_main_view
-        )
-        self.current_view.pack(fill="both", expand=True)
+    # Optional: Konfigurationswerte (z. B. für Sessions, Sicherheit)
+    app_instance.config['SECRET_KEY'] = 'your-secret-key'  # Wird z. B. für sichere Cookies benötigt
 
-    def zeige_register_view(self):
-        """
-        Zeigt die Registrierungs-Oberfläche.
-        Wird aufgerufen, wenn der Benutzer auf "Registrieren" klickt.
-        """
-        if self.current_view:
-            self.current_view.destroy()
-        self.current_view = RegisterView(
-            master=self,
-            switch_to_login=self.zeige_login_view
-        )
-        self.current_view.pack(fill="both", expand=True)
+    # Registrierung der API-Routen über Blueprints
+    # Alle Login- und Registrierungsendpunkte sind über den Pfad /api/auth erreichbar
+    app_instance.register_blueprint(login_blueprint, url_prefix='/api/auth')
+    app_instance.register_blueprint(register_blueprint, url_prefix='/api/auth')
 
-    def zeige_main_view(self, username):
-        """
-        Zeigt die Hauptansicht zur Zeiterfassung.
-        Wird aufgerufen nach erfolgreichem Login.
-        """
-        if self.current_view:
-            self.current_view.destroy()
-        self.current_view = MainView(
-            master=self,
-            username=username,
-            logout_callback=self.zeige_login_view
-        )
-        self.current_view.pack(fill="both", expand=True)
+    return app_instance
 
-"""Einstiegspunkt der Anwendung"""
-if __name__ == "__main__":
-    app = Application()
-    app.mainloop()
+if __name__ == '__main__':
+    # Wenn die Datei direkt ausgeführt wird, starte den lokalen Webserver
+    app = create_app()
+    app.run(debug=True)  # Debug-Modus: sollte in Produktion deaktiviert werden

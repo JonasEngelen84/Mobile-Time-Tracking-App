@@ -1,7 +1,8 @@
 import tkinter as tk
+from tkinter import messagebox
 from backend.services.auth_services import login
 
-"""Ansicht für Benutzer-Login. Nutzt auth_logic zur Benutzererstellung."""
+""" Ansicht für Benutzer-Login. Nutzt auth_services zur Benutzeranmeldung. """
 class LoginView(tk.Frame):
     def __init__(self, master, switch_to_register, login_successful_callback):
         super().__init__(master)
@@ -12,38 +13,53 @@ class LoginView(tk.Frame):
         zentriere_fenster(self.master)
 
     def _build_ui(self):
+        # Überschrift
         tk.Label(self, text="Login", font=("Arial", 14, "bold")).pack(pady=10)
 
         # Benutzername (Label + Eingabefeld)
-        benutzer_frame = tk.Frame(self)
-        benutzer_frame.pack(pady=5)
-        tk.Label(benutzer_frame, text="Benutzername:").pack()
-        self.username_entry = tk.Entry(benutzer_frame, width=23)
+        username_frame = tk.Frame(self)
+        username_frame.pack(pady=5)
+        tk.Label(username_frame, text="Benutzername:").pack()
+        self.username_entry = tk.Entry(username_frame, width=23)
         self.username_entry.pack()
 
         # Passwort (Label + Eingabefeld)
-        passwort_frame = tk.Frame(self)
-        passwort_frame.pack(pady=5)
-        tk.Label(passwort_frame, text="Passwort:").pack()
-        self.password_entry = tk.Entry(passwort_frame, show="*", width=23)
+        password_frame = tk.Frame(self)
+        password_frame.pack(pady=5)
+        tk.Label(password_frame, text="Passwort:").pack()
+        self.password_entry = tk.Entry(password_frame, show="*", width=23)
         self.password_entry.pack()
 
-        # Login button
+        # Login-Button
         tk.Button(
             self,
             text="Login",
             width=19,
-            command=lambda: login(
-                self.username_entry.get().strip(),
-                self.password_entry.get().strip(),
-                self.login_successful_callback  # z. B. zum Wechsel ins MainView
-            )
+            command=self.handle_login  # Verknüpft mit eigener Logik
         ).pack(pady=15)
 
-        # Registrieren button
+        # Button zum Registrieren
         tk.Button(self, text="Neuen Benutzer erstellen", command=self.switch_to_register).pack()
-    
+
+    def handle_login(self):
+        """
+        Ruft die login-Funktion auf und behandelt Rückgabe.
+        Zeigt bei Fehlern eine Messagebox an, bei Erfolg wird Callback ausgelöst.
+        """
+        username = self.username_entry.get().strip()
+        password = self.password_entry.get().strip()
+
+        success, message = login(username, password)
+
+        if success:
+            self.login_successful_callback(username)
+        else:
+            messagebox.showerror("Login fehlgeschlagen", message)
+
 def zentriere_fenster(fenster, breite=210, höhe=380):
+    """
+    Zentriert das Fenster auf dem Bildschirm.
+    """
     fenster.update_idletasks()
     screen_width = fenster.winfo_screenwidth()
     screen_height = fenster.winfo_screenheight()
