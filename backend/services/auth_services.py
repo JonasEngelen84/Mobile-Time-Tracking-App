@@ -1,46 +1,41 @@
 from storage.user_storage import UserStorage
-from tkinter import messagebox
 
 user_storage = UserStorage()
 
-def register(username: str, password: str, password_repetition: str, on_success: callable = None) -> None:
+def register(username: str, password: str, password_repetition: str, on_success: callable = None) -> tuple[bool, str]:
     """
-    Führt eine Benutzerregistrierung durch und gibt direkt Rückmeldung via GUI.
-    Optionaler Callback `on_success` wird bei successreicher Registrierung aufgerufen.
+    Führt die Benutzerregistrierung durch. Gibt ein Tupel (Erfolg, Nachricht) zurück.
+    Optional: Callback `on_success`, der bei erfolgreicher Registrierung ausgeführt wird.
     """
     if not username or not password or not password_repetition:
-        messagebox.showerror("Registrierung fehlgeschlagen", "Alle Felder müssen ausgefüllt werden.")
-        return
+        return False, "Alle Felder müssen ausgefüllt sein."
 
     if password != password_repetition:
-        messagebox.showerror("Registrierung fehlgeschlagen", "Passwörter stimmen nicht überein.")
-        return
+        return False, "Passwörter stimmen nicht überein."
 
     success = user_storage.save_user(username, password)
 
     if success:
-        messagebox.showinfo("Registrierung erfolgreich", "Die Registrierung wurde erfolgreich beendet.")
-        if on_success:
+        if callable(on_success):
             on_success()
+        return True, "Registrierung war erfolgreich."
     else:
-        messagebox.showerror("Benutzername vergeben", "Bitte anderen Namen eingeben.")
+        return False, "Benutzername bereits vergeben."
 
-def login(username: str, password: str, on_success=None) -> None:
+def login(username: str, password: str, on_success: callable = None) -> tuple[bool, str]:
     """
-    Führt die Benutzeranmeldung durch.
-    Zeigt bei Fehlern eine Messagebox an.
-    Führt bei success den optionalen Callback `on_success` aus.
+    Führt die Benutzeranmeldung durch. Gibt ein Tupel (Erfolg, Nachricht) zurück.
+    Optional: Callback `on_success`, der bei erfolgreichem Login ausgeführt wird.
     """
     if not username or not password:
-        messagebox.showerror("Login fehlgeschlagen", "Benutzername und Passwort müssen ausgefüllt sein.")
-        return
+        return False, "Benutzername und Passwort müssen ausgefüllt sein."
 
     authenticated = user_storage.auth_user(username, password)
 
     if authenticated:
         if callable(on_success):
             on_success(username)
-            return True, ""
+        return True, "Login war erfolgreich."
     else:
-        messagebox.showerror("Login fehlgeschlagen", "Benutzername oder Passwort ist falsch.")
+        return False, "Benutzername oder Passwort ist falsch."
     
