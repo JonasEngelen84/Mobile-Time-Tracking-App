@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';  // Flutter-Bibliothek für grafische Oberfläche
-import '../api/register_api.dart';  // Zur Kommunikation mit API
+import 'package:frontend_flutter/api/register_api.dart';  // Zur Kommunikation mit API
 
 // Registrierungs-Oberfläche:
 // Zeigt drei Eingabefelder (Benutzername, Passwort und Passwort wiederholen) sowie zwei Buttons:
@@ -35,7 +35,7 @@ class _RegisterViewState extends State<RegisterView> {
   String _report = '';  // Diese Variable speichert die Rückmeldung (z. B. "Erfolgreich registriert")
 
   // Diese Methode wird aufgerufen, wenn der Benutzer auf „Registrieren“ klickt
-  Future<void> _benutzerRegistrieren() async {
+  Future<void> _registerUser() async {
     // Trim entfernt Leerzeichen am Anfang und Ende
     final username = _usernameController.text.trim();
     final password = d.text.trim();
@@ -60,7 +60,7 @@ class _RegisterViewState extends State<RegisterView> {
     });
 
     // An die API senden → registrieren() aus auth_api.dart wird aufgerufen
-    final rueckmeldung = await registrieren(username, password);
+    final rueckmeldung = await register(username, password);
 
     // Ergebnis anzeigen und Ladeanzeige abschalten
     setState(() {

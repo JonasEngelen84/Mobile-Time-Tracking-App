@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart'; // Flutter-Bibliothek für grafische Oberfläche
-import '../api/login_api.dart';  // Zur Kommunikation mit API
+import 'package:frontend_flutter/api/login_api.dart';  // Zur Kommunikation mit API
 
 // Login-Oberfläche:
 // Zeigt zwei Eingabefelder (Benutzername und Passwort) sowie zwei Buttons:

@@ -13,4 +13,3 @@ def register_route():
 
     success, report = register_logic(user, password, password_repeat)
     return jsonify({"success": success, "message": report})
-
