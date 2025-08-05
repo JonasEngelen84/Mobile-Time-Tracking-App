@@ -12,7 +12,7 @@ into clearly structured modules following the "Separation of Concerns" principle
 🔧 Technologies
 • Python 3.10+ – Programming language
 • SQLite – Relational database for local persistent storage
-• Tkinter – Frontend
+• Flutter/Dart – Frontend
 • Datetime – Time handling
 • abc module – Abstract Base Classes (interfaces) for a testable architecture
 • Modular design – Separation of business logic, storage, interfaces, and formatting for maintainability
