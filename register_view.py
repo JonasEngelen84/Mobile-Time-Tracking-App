@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from backend.services.auth_services import register
+from backend_flask.services.auth_services import register
 
 """ Ansicht für Benutzer-Registrierung. Nutzt auth_services zur Benutzererstellung. """
 class RegisterView(tk.Frame):    

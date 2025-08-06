@@ -1,5 +1,5 @@
 import sqlite3
-from backend.interfaces.time_storage_interface import TimeStorageInterface
+from backend_flask.interfaces.time_storage_interface import TimeStorageInterface
 
 class TimeStorage(TimeStorageInterface):
     """Verbindet sich mit der angegebenen SQLite-Datenbankdatei."""

@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from backend.services.auth_services import login
+from backend_flask.services.auth_services import login
 
 """ Ansicht für Benutzer-Login. Nutzt auth_services zur Benutzeranmeldung. """
 class LoginView(tk.Frame):

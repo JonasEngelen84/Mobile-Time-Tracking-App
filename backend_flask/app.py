@@ -1,6 +1,6 @@
 from flask import Flask
-from backend.routes.login_route import login_blueprint
-from backend.routes.register_route import register_blueprint
+from backend_flask.routes.login_route import login_blueprint
+from backend_flask.routes.register_route import register_blueprint
 
 def create_app():
     """

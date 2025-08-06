@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from backend.services.auth_services import register as register_logic
+from backend_flask.services.auth_services import register as register_logic
 
 register_blueprint = Blueprint("register", __name__)
 
