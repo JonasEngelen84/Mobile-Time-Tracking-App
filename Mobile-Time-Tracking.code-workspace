@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "backend_flask"
+		},
+		{
+			"path": "frontend_flutter"
+		}
+	],
+	"settings": {}
+}
