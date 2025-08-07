@@ -1,28 +1,21 @@
-import 'dart:convert'; // Für das Umwandeln von Dart-Objekten in JSON
-import 'package:http/http.dart' as http; // Für HTTP-Kommunikation mit dem Backend
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-/// Diese Funktion versucht, einen Benutzer über das Flask-Backend einzuloggen.
-/// Es wird eine POST-Anfrage an den /login-Endpunkt geschickt.
+/// Sendet Anmeldedaten an das Backend und verarbeitet die Antwort.
 ///
-/// Parameter:
-/// - [username]: der eingegebene Benutzername
-/// - [password]: das eingegebene Passwort
-///
-/// Rückgabe:
-/// - Eine Map mit zwei Werten:
-///   - "success": true oder false
-///   - "message": Rückmeldung vom Server (z. B. Fehlertext oder Erfolgsnachricht)
-///
-/// Fehlerfall:
-/// - Wenn die Serverantwort nicht erfolgreich ist, wird eine Exception geworfen.
-Future<(bool, String)> loginUser(String username, String password) async {
-  if (username.isEmpty || password.isEmpty) {
-    return (false, "Benutzername und Passwort dürfen nicht leer sein.");
-  }
-
+/// Gibt eine Map zurück:
+/// {
+///   "success": true/false,
+///   "message": "Erfolgsmeldung oder Fehlerbeschreibung"
+/// }
+Future<Map<String, dynamic>> loginUser(String username, String password) async {
   try {
+    // Backend-Endpunkt
+    final url = Uri.parse("http://10.0.2.2:5000/login");
+
+    // Daten als JSON senden
     final response = await http.post(
-      Uri.parse("http://127.0.0.1:5000/api/auth/login"),
+      url,
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         "username": username,
@@ -30,16 +23,23 @@ Future<(bool, String)> loginUser(String username, String password) async {
       }),
     );
 
+    // Antwort auswerten
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final success = data["success"] ?? false;
-      final message = data["message"] ?? "Unbekannte Antwort";
-
-      return (success, message);
+      return {
+        "success": data["success"],
+        "message": data["message"],
+      };
     } else {
-      return (false, "Serverfehler (${response.statusCode})");
+      return {
+        "success": false,
+        "message": "Serverfehler (${response.statusCode}) bei der Anmeldung.",
+      };
     }
   } catch (e) {
-    return (false, "Verbindungsfehler: $e");
+    return {
+      "success": false,
+      "message": "Netzwerkfehler: $e",
+    };
   }
 }

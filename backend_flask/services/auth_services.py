@@ -2,25 +2,45 @@ from storage.user_storage import UserStorage
 
 user_storage = UserStorage()
 
+from storage.user_storage import UserStorage
+
+# Instanz der Datenbankschicht zur Speicherung und Abfrage von Benutzerdaten
+user_storage = UserStorage()
+
 def register(username: str, password: str, password_repetition: str, on_success: callable = None) -> tuple[bool, str]:
     """
-    Führt die Benutzerregistrierung durch. Gibt ein Tupel (Erfolg, Nachricht) zurück.
-    Optional: Callback `on_success`, der bei erfolgreicher Registrierung ausgeführt wird.
+    Registriert einen neuen Benutzer.
+
+    Parameter:
+    - username (str): Der gewünschte Benutzername.
+    - password (str): Das Passwort.
+    - password_repetition (str): Wiederholung des Passworts zur Validierung.
+    - on_success (callable, optional): Optionaler Callback, der bei erfolgreicher Registrierung ausgeführt wird.
+
+    Rückgabe:
+    - Tuple (bool, str): Erfolgsstatus (True/False), sowie eine Rückmeldung für den Benutzer.
     """
+
+    # Validierung: Alle Felder müssen ausgefüllt sein
     if not username or not password or not password_repetition:
         return False, "Alle Felder müssen ausgefüllt sein."
 
+    # Validierung: Passwort und Wiederholung müssen übereinstimmen
     if password != password_repetition:
         return False, "Passwörter stimmen nicht überein."
 
+    # Benutzer speichern – false, wenn Benutzername bereits existiert
     success = user_storage.save_user(username, password)
 
     if success:
+        # Optionalen Callback ausführen, z. B. Logging
         if callable(on_success):
             on_success()
         return True, "Registrierung war erfolgreich."
     else:
+        # Benutzername existiert bereits
         return False, "Benutzername bereits vergeben."
+
 
 def login(username: str, password: str, on_success: callable = None) -> tuple[bool, str]:
     """
