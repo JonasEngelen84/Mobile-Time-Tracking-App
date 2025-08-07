@@ -1,24 +1,12 @@
 from storage.user_storage import UserStorage
 
-user_storage = UserStorage()
-
-from storage.user_storage import UserStorage
-
 # Instanz der Datenbankschicht zur Speicherung und Abfrage von Benutzerdaten
 user_storage = UserStorage()
 
 def register(username: str, password: str, password_repetition: str, on_success: callable = None) -> tuple[bool, str]:
     """
-    Registriert einen neuen Benutzer.
-
-    Parameter:
-    - username (str): Der gewünschte Benutzername.
-    - password (str): Das Passwort.
-    - password_repetition (str): Wiederholung des Passworts zur Validierung.
-    - on_success (callable, optional): Optionaler Callback, der bei erfolgreicher Registrierung ausgeführt wird.
-
-    Rückgabe:
-    - Tuple (bool, str): Erfolgsstatus (True/False), sowie eine Rückmeldung für den Benutzer.
+    Registriert einen neuen Benutzer.- Tuple (bool, str): Erfolgsstatus (True/False),
+    sowie eine Rückmeldung für den Benutzer.
     """
 
     # Validierung: Alle Felder müssen ausgefüllt sein
