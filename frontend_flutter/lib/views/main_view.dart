@@ -1,142 +1,127 @@
 import 'package:flutter/material.dart';
 
-class MainView extends StatefulWidget {
-  final String username;
-  final VoidCallback onLogout;
-  final void Function(String activity) onStart;
-  final void Function() onStop;
-  final void Function(String start, String stop, String activity) onManualConfirm;
-  final VoidCallback onShowOverview;
+import '../models/time_entry.dart';
+import 'login_view.dart';
+import 'register_view.dart';
+import 'time_tracking_view.dart';
+import 'time_tracking_overview_view.dart';
 
-  const MainView({
-    Key? key,
-    required this.username,
-    required this.onLogout,
-    required this.onStart,
-    required this.onStop,
-    required this.onManualConfirm,
-    required this.onShowOverview,
-  }) : super(key: key);
+/// Enum zur klaren Definition der möglichen Ansichten (Views)
+enum AppView {
+  login,
+  register,
+  timeTracking,
+  overview,
+}
+
+/// MainView übernimmt ausschließlich die Navigation zwischen den Views,
+/// hält den aktuellen State, wer ist eingeloggt, und reagiert auf Events der Views.
+class MainView extends StatefulWidget {
+  const MainView({Key? key}) : super(key: key);
 
   @override
   State<MainView> createState() => _MainViewState();
 }
 
 class _MainViewState extends State<MainView> {
-  final List<String> _aktivitaeten = [
-    "Arbeit mit Klient", "Betreuungskind krank", "Dienstreise", "Dokumentation",
-    "Fortbildung", "Interne Planung", "Eigenes Kind krank", "Krank", "Pause",
-    "Sonstige bezahlt", "Sonstige unbezahlt", "Teammeeting", "Urlaub", "Zeitausgleich"
-  ];
+  // Aktuelle Ansicht (View)
+  AppView _currentView = AppView.login;
 
-  String _selectedActivity = "Arbeit mit Klient";
-  String _durationText = "Dauer: 0 Minuten";
+  // Eingeloggter Benutzername, null wenn nicht eingeloggt
+  String? _username;
 
-  final TextEditingController _startController = TextEditingController(text: "DD.MM.YYYY HH:MM");
-  final TextEditingController _stopController = TextEditingController(text: "DD.MM.YYYY HH:MM");
+  // Gespeicherte Zeit-Einträge für die Übersicht (Beispiel)
+  final List<TimeEntry> _timeEntries = [];
 
-  void _handleFocus(TextEditingController controller, bool hasFocus) {
-    if (hasFocus && controller.text == "DD.MM.YYYY HH:MM") {
-      controller.clear();
-    } else if (!hasFocus && controller.text.isEmpty) {
-      controller.text = "DD.MM.YYYY HH:MM";
-    }
+  // --- Methoden zum View-Wechsel und State-Management ---
+
+  // Nach erfolgreichem Login zur TimeTracking-Ansicht wechseln
+  void _handleLoginSuccess(String username) {
+    setState(() {
+      _username = username;
+      _currentView = AppView.timeTracking;
+    });
   }
 
+  // Zur Registrierung wechseln
+  void _goToRegister() {
+    setState(() {
+      _currentView = AppView.register;
+    });
+  }
+
+  // Zurück zur Login-Ansicht wechseln
+  void _goToLogin() {
+    setState(() {
+      _username = null;
+      _currentView = AppView.login;
+    });
+  }
+
+  // Zur TimeTracking-Ansicht wechseln (z.B. von Übersicht)
+  void _goToTimeTracking() {
+    setState(() {
+      _currentView = AppView.timeTracking;
+    });
+  }
+
+  // Zur Übersicht wechseln
+  void _goToOverview() {
+    setState(() {
+      _currentView = AppView.overview;
+    });
+  }
+
+  // Beispiel: Neue Zeiterfassung hinzufügen
+  void _handleAddTimeEntry(TimeEntry entry) {
+    setState(() {
+      _timeEntries.add(entry);
+    });
+  }
+
+  // --- Build-Methode entscheidet, welche View angezeigt wird ---
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Zeiterfassung")),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 16),
-            const Text("Aktivität auswählen:", style: TextStyle(fontSize: 14)),
-            const SizedBox(height: 8),
-            DropdownButton<String>(
-              value: _selectedActivity,
-              items: _aktivitaeten.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-              onChanged: (val) => setState(() => _selectedActivity = val!),
-              isExpanded: true,
-            ),
-
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    widget.onStart(_selectedActivity);
-                  },
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                  child: const Text("Start"),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Focus(
-                    onFocusChange: (hasFocus) => _handleFocus(_startController, hasFocus),
-                    child: TextField(
-                      controller: _startController,
-                      decoration: const InputDecoration(border: OutlineInputBorder()),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-            Text(_durationText, style: const TextStyle(fontWeight: FontWeight.bold)),
-
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    widget.onStop();
-                  },
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  child: const Text("Stopp"),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Focus(
-                    onFocusChange: (hasFocus) => _handleFocus(_stopController, hasFocus),
-                    child: TextField(
-                      controller: _stopController,
-                      decoration: const InputDecoration(border: OutlineInputBorder()),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                widget.onManualConfirm(
-                  _startController.text.trim(),
-                  _stopController.text.trim(),
-                  _selectedActivity,
-                );
-              },
-              child: const Text("Manuelle Bestätigung"),
-            ),
-
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: widget.onShowOverview,
-              child: const Text("Übersicht öffnen"),
-            ),
-
-            const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: widget.onLogout,
-              child: const Text("Logout"),
-            ),
-          ],
-        ),
-      ),
-    );
+    switch (_currentView) {
+      case AppView.login:
+        return LoginView(
+          onLoginSuccess: _handleLoginSuccess,
+          onGoToRegister: _goToRegister,
+        );
+      case AppView.register:
+        return RegisterView(
+          onRegisterSuccess: _goToLogin, // nach Registrierung zurück zum Login
+          onGoToLogin: _goToLogin,
+        );
+      case AppView.timeTracking:
+        return TimeTrackingView(
+          username: _username!,
+          onLogout: _goToLogin,
+          onStart: (activity) {
+            // Beispiel: Start-Event - hier könntest du Tracking starten
+          },
+          onStop: () {
+            // Beispiel: Stop-Event
+          },
+          onManualConfirm: (start, stop, activity) {
+            // Zeit-Eintrag erzeugen und hinzufügen
+            final startDate = DateTime.tryParse(start);
+            final stopDate = DateTime.tryParse(stop);
+            if (startDate != null && stopDate != null) {
+              _handleAddTimeEntry(TimeEntry(
+                start: startDate,
+                stop: stopDate,
+                activity: activity,
+              ));
+            }
+          },
+          onShowOverview: _goToOverview,
+        );
+      case AppView.overview:
+        return TimeTrackingOverviewView(
+          entries: _timeEntries,
+          onBack: _goToTimeTracking,
+        );
+    }
   }
 }

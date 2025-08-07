@@ -1,35 +1,81 @@
-import 'package:flutter/material.dart'; // Flutter-Bibliothek für grafische Oberfläche
-import 'package:frontend_flutter/api/login_api.dart';  // Zur Kommunikation mit API
+import 'package:flutter/material.dart';
+import 'package:frontend_flutter/api/login_api.dart';
 
-// Login-Oberfläche:
-// Zeigt zwei Eingabefelder (Benutzername und Passwort) sowie zwei Buttons:
-// - Einen Button zum Einloggen (verbindet sich mit der API)
-// - Einen Button zum Wechseln zur Registrierungs-Oberfläche
-// Die tatsächliche Login-Logik (API-Aufruf) wird in "login_command.py" ausgeführt.
-class LoginView extends StatefulWidget {  
-  final void Function(String benutzername, String passwort) onLogin; // Wird aufgerufen, wenn der Nutzer sich einloggen möchte.
-  final VoidCallback onRegister; // Wird aufgerufen, wenn der Nutzer zur Registrierungsansicht wechseln möchte.
+/// Diese Ansicht zeigt das Login-Formular an:
+/// - Benutzername und Passwort
+/// - Button zum Einloggen
+/// - Button zum Wechseln zur Registrierung
+class LoginView extends StatefulWidget {
+  final void Function(String username) onLoginSuccess;
+  final VoidCallback onGoToRegister;
 
-  // Konstruktor
   const LoginView({
-    Key? key, // Optionaler Schlüssel für das Widget (z. B. für Tests oder eindeutige Identifikation in der Baumstruktur)
-    required this.onLogin, // Wird beim Klick auf "Einloggen" ausgeführt. Erwartet zwei Strings: Benutzername und Passwort.
-    required this.onRegister,  // Wird beim Klick auf "Registrieren" ausgeführt. Parameterlos (VoidCallback).
-  }) : super(key: key); // Ruft den Konstruktor der Oberklasse (StatefulWidget) auf und übergibt den optionalen Schlüssel
+    Key? key,
+    required this.onLoginSuccess,
+    required this.onGoToRegister,
+  }) : super(key: key);
 
-  // Diese Methode ist notwendig bei einem StatefulWidget. (Flutter-Widget, das sich zur Laufzeit verändern kann.)
-  // Sie erstellt und verbindet den Zustand (State) des Widgets. In diesem Fall heißt die Zustandsklasse _LoginViewState.
-  // Verwendung: Eingaben verwalten, UI aktualisieren und Lebenszyklus steuern (z. B. initState, dispose etc.).
   @override
   State<LoginView> createState() => _LoginViewState();
 }
 
-// Der Zustand (State) der LoginView.
-// Hier werden Eingabefelder verwaltet und die Oberfläche aktualisiert.
 class _LoginViewState extends State<LoginView> {
-  // Speicherung der Eingaben
+  // Eingabefelder
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  bool _isLoading = false; // Ladeanzeige beim Warten auf Backend
+  String _statusMessage = ''; // Meldung bei Fehler oder Erfolg
+
+  /// Diese Methode wird beim Klick auf "Einloggen" ausgeführt.
+  /// Sie ruft die API auf und verarbeitet das Ergebnis.
+  Future<void> _loginUser() async {
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // Minimale Validierung – nicht leer
+    if (username.isEmpty || password.isEmpty) {
+      setState(() => _statusMessage = "Bitte Benutzername und Passwort eingeben.");
+      return;
+    }
+
+    // Ladeanzeige aktivieren
+    setState(() {
+      _isLoading = true;
+      _statusMessage = '';
+    });
+
+    // Anfrage an das Backend senden – Login prüfen
+    final result = await loginUser(username, password);
+
+    // Ladeanzeige deaktivieren
+    setState(() {
+      _isLoading = false;
+    });
+
+    final success = result["success"];
+    final message = result["message"];
+
+    if (success) {
+      // Wenn erfolgreich eingeloggt → Weiter zur Hauptansicht
+      Navigator.pushReplacementNamed(context, '/home', arguments: username);
+    } else {
+      // Bei Fehler → Dialog anzeigen
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Login fehlgeschlagen"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +85,11 @@ class _LoginViewState extends State<LoginView> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0), // Innenabstand rund um die Felder
+        padding: const EdgeInsets.all(24.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // Vertikal zentriert
-          crossAxisAlignment: CrossAxisAlignment.stretch, // Volle Breite nutzen
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Eingabefeld: Benutzername
             TextField(
               controller: _usernameController,
               decoration: const InputDecoration(
@@ -52,9 +97,7 @@ class _LoginViewState extends State<LoginView> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 16), // Abstand
-
-            // Eingabefeld: Passwort (verdeckte Eingabe)
+            const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
               obscureText: true,
@@ -63,45 +106,28 @@ class _LoginViewState extends State<LoginView> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 24), // Abstand
+            const SizedBox(height: 24),
 
-            // Login-Button: Übergibt Benutzername + Passwort an die Login-Logik
             ElevatedButton(
-              onPressed: () async {
-                final username = _usernameController.text.trim();
-                final password = _passwordController.text.trim();
-
-                final (success, message) = await loginUser(username, password);
-
-                if (success) {
-                  widget.onLogin(username, password); // ggf. Hauptseite laden
-                } else {
-                  // Fehlermeldung als Dialog anzeigen
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text("Login fehlgeschlagen"),
-                      content: Text(message),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text("OK"),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              },
+              onPressed: _isLoading ? null : _loginUser,
               child: const Text("Einloggen"),
             ),
 
             const SizedBox(height: 12),
-
-            // Wechsel zur Registrierung
             TextButton(
-              onPressed: widget.onRegister,
+              onPressed: widget.onGoToRegister,
               child: const Text("Noch kein Konto? Jetzt registrieren."),
             ),
+
+            if (_statusMessage.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Text(
+                  _statusMessage,
+                  style: const TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
+                ),
+              ),
           ],
         ),
       ),
@@ -110,7 +136,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   void dispose() {
-    // Eingabefelder aufräumen, wenn die Ansicht geschlossen wird
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
