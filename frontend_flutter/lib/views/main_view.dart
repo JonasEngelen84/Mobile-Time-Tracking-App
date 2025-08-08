@@ -17,7 +17,7 @@ enum AppView {
 /// MainView übernimmt ausschließlich die Navigation zwischen den Views,
 /// hält den aktuellen State, wer ist eingeloggt, und reagiert auf Events der Views.
 class MainView extends StatefulWidget {
-  const MainView({Key? key}) : super(key: key);
+  const MainView({super.key});
 
   @override
   State<MainView> createState() => _MainViewState();
@@ -97,24 +97,6 @@ class _MainViewState extends State<MainView> {
         return TimeTrackingView(
           username: _username!,
           onLogout: _goToLogin,
-          onStart: (activity) {
-            // Beispiel: Start-Event - hier könntest du Tracking starten
-          },
-          onStop: () {
-            // Beispiel: Stop-Event
-          },
-          onManualConfirm: (start, stop, activity) {
-            // Zeit-Eintrag erzeugen und hinzufügen
-            final startDate = DateTime.tryParse(start);
-            final stopDate = DateTime.tryParse(stop);
-            if (startDate != null && stopDate != null) {
-              _handleAddTimeEntry(TimeEntry(
-                start: startDate,
-                stop: stopDate,
-                activity: activity,
-              ));
-            }
-          },
           onShowOverview: _goToOverview,
         );
       case AppView.overview:

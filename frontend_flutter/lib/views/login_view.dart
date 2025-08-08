@@ -10,10 +10,10 @@ class LoginView extends StatefulWidget {
   final VoidCallback onGoToRegister;
 
   const LoginView({
-    Key? key,
+    super.key,
     required this.onLoginSuccess,
     required this.onGoToRegister,
-  }) : super(key: key);
+  });
 
   @override
   State<LoginView> createState() => _LoginViewState();

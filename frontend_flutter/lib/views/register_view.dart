@@ -10,10 +10,10 @@ class RegisterView extends StatefulWidget {
   final VoidCallback onGoToLogin;
 
   const RegisterView({
-    Key? key,
+    super.key,
     required this.onRegisterSuccess,
     required this.onGoToLogin, // Callback zum Wechsel zurück zur Login-Seite
-  }) : super(key: key);
+  });
 
   @override
   State<RegisterView> createState() => _RegisterViewState();
