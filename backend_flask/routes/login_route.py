@@ -12,4 +12,3 @@ def login_route():
 
     success, report = login_logic(user, password)
     return jsonify({"success": success, "message": report})
-

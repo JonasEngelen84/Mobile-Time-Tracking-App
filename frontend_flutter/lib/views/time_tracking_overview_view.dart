@@ -8,10 +8,10 @@ class TimeTrackingOverviewView extends StatelessWidget {
   final VoidCallback onBack;     // Rücksprung-Callback zur Hauptansicht
 
   const TimeTrackingOverviewView({
-    Key? key,
+    super.key,
     required this.entries,
     required this.onBack,
-  }) : super(key: key);
+  });
 
   /// Datumsformatierer für die Anzeige von Start/Stopp-Zeiten
   String _formatDate(DateTime dt) {
@@ -22,7 +22,7 @@ class TimeTrackingOverviewView extends StatelessWidget {
   String _formatDuration(Duration d) {
     final minutes = d.inMinutes;
     final hours = d.inHours;
-    return "$minutes Min (${hours} Std)";
+    return "$minutes Min ($hours Std)";
   }
 
   @override

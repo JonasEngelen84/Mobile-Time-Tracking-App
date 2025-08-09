@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 Future<Map<String, dynamic>> loginUser(String username, String password) async {
   try {
     // Backend-Endpunkt
-    final url = Uri.parse("http://10.0.2.2:5000/login");
+    final url = Uri.parse("http://10.0.2.2:5000/api/auth/login");
 
     // Daten als JSON senden
     final response = await http.post(

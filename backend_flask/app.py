@@ -15,8 +15,8 @@ def create_app():
 
     # Registrierung der API-Routen über Blueprints
     # Alle Login- und Registrierungsendpunkte sind über den Pfad /api/auth erreichbar
-    app_instance.register_blueprint(login_blueprint, url_prefix='/api/auth')
-    app_instance.register_blueprint(register_blueprint, url_prefix='/api/auth')
+    app_instance.register_blueprint(login_blueprint)
+    app_instance.register_blueprint(register_blueprint)
     app_instance.register_blueprint(time_tracking_blueprint, url_prefix='/api/time')
 
     return app_instance

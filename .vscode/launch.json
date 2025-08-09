@@ -8,7 +8,7 @@
             "name": "Python: App starten",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/backend/app.py",
+            "program": "${workspaceFolder}/backend_flask/app.py",
             "cwd": "${workspaceFolder}",
             "env": {
             "PYTHONPATH": "${workspaceFolder}"

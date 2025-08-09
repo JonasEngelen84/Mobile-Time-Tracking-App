@@ -13,11 +13,11 @@ class TimeTrackingView extends StatefulWidget {
   final VoidCallback onShowOverview; // Callback zur Übersicht (Liste von Einträgen)
 
   const TimeTrackingView({
-    Key? key,
+    super.key,
     required this.username,
     required this.onLogout,
     required this.onShowOverview,
-  }) : super(key: key);
+  });
 
   @override
   State<TimeTrackingView> createState() => _TimeTrackingViewState();

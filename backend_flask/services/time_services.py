@@ -1,5 +1,5 @@
 from datetime import datetime
-from storage.time_storage import TimeStorage
+from backend_flask.storage.time_storage import TimeStorage
 from tkinter import messagebox
 from backend_flask.utils.time_format_utils import duration_formatting, stopwatch_formatting, convert_time_format
 

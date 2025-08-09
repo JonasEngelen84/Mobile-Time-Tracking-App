@@ -9,6 +9,6 @@
 	],
 	"settings": {
 		"python.pythonPath": ".venv\\Scripts\\python.exe",
-		"python.analysis.extraPaths": ["./backend_flask"]
+		"python.analysis.extraPaths": ["${D:\Programmierung\Visual Studio Code\Python\Projekte\Mobile-Time-Tracking\backend_flask}"]
 	}
 }
