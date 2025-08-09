@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from backend_flask.services import time_services
+from services import time_services
 
 time_tracking_blueprint = Blueprint("time_tracking", __name__)
 

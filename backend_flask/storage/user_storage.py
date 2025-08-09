@@ -1,5 +1,5 @@
 import sqlite3
-from backend_flask.interfaces.user_storage_interface import UserStorageInterface
+from interfaces.user_storage_interface import UserStorageInterface
 
 class UserStorage(UserStorageInterface):
     """Verbindet sich mit der angegebenen SQLite-Datenbankdatei."""

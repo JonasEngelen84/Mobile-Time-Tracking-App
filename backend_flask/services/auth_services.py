@@ -1,4 +1,4 @@
-from backend_flask.storage.user_storage import UserStorage
+from storage.user_storage import UserStorage
 
 # Instanz der Datenbankschicht zur Speicherung und Abfrage von Benutzerdaten
 user_storage = UserStorage()

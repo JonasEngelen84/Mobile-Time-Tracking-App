@@ -1,7 +1,7 @@
 from datetime import datetime
-from backend_flask.storage.time_storage import TimeStorage
+from storage.time_storage import TimeStorage
 from tkinter import messagebox
-from backend_flask.utils.time_format_utils import duration_formatting, stopwatch_formatting, convert_time_format
+from utils.time_format_utils import duration_formatting, stopwatch_formatting, convert_time_format
 
 # Konstante für das Datums- und Zeitformat
 DATETIME_FORMAT = "%d.%m.%Y %H:%M"

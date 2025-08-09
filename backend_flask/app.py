@@ -1,7 +1,7 @@
 from flask import Flask
-from backend_flask.routes.login_route import login_blueprint
-from backend_flask.routes.register_route import register_blueprint
-from backend_flask.routes.time_tracking_route import time_tracking_blueprint
+from routes.login_route import login_blueprint
+from routes.register_route import register_blueprint
+from routes.time_tracking_route import time_tracking_blueprint
 
 def create_app():
     """
