@@ -1,7 +1,6 @@
 from flask import Flask
-from routes.login_route import login_blueprint
-from routes.register_route import register_blueprint
-from routes.time_tracking_route import time_tracking_blueprint
+from routes.auth_routes import auth_blueprint
+from routes.time_tracking_routes import time_tracking_blueprint
 
 def create_app():
     """
@@ -14,9 +13,7 @@ def create_app():
     app_instance.config['SECRET_KEY'] = 'your-secret-key'  # Wird z. B. für sichere Cookies benötigt
 
     # Registrierung der API-Routen über Blueprints
-    # Alle Login- und Registrierungsendpunkte sind über den Pfad /api/auth erreichbar
-    app_instance.register_blueprint(login_blueprint)
-    app_instance.register_blueprint(register_blueprint)
+    app_instance.register_blueprint(auth_blueprint)
     app_instance.register_blueprint(time_tracking_blueprint, url_prefix='/api/time')
 
     return app_instance

@@ -4,12 +4,8 @@ from services import time_services
 time_tracking_blueprint = Blueprint("time_tracking", __name__)
 
 @time_tracking_blueprint.route("/start_timer", methods=["POST"])
+# Startet den Timer, ruft die Logik in time_services auf und gibt Erfolg/Fehler zurück.
 def start_timer_route():
-    """
-    Startet die Zeiterfassung.
-    Erwartet JSON mit "username" und "activity".
-    Ruft die Logik in time_services auf und gibt Erfolg/Fehler zurück.
-    """
     data = request.json
     username = data.get("username")
     activity = data.get("activity")
@@ -17,9 +13,11 @@ def start_timer_route():
     if not username or not activity:
         return jsonify({"success": False, "message": "Benutzername und Aktivität sind erforderlich."}), 400
 
-    # Startzeit in time_services setzen (UI-relevante Updates hier nicht möglich)
-    # Statt UI-Elemente (timer_label, btn_manual) einfach intern speichern oder Status zurückgeben.
-    # Da du Tkinter-Elemente hast, ist hier eher Backend-Only Logik sinnvoll.
+    """
+    Startzeit in time_services setzen (UI-relevante Updates hier nicht möglich)
+    Statt UI-Elemente (timer_label, btn_manual) einfach intern speichern oder Status zurückgeben.
+    Da du Tkinter-Elemente hast, ist hier eher Backend-Only Logik sinnvoll.
+    """
 
     # Einfacher Startzeitpunkt speichern, ohne UI (für API-Logik)
     time_services.start = None  # ggf. zurücksetzen
@@ -35,6 +33,7 @@ def start_timer_route():
     return jsonify({"success": True, "message": f"Zeiterfassung für '{activity}' gestartet."})
 
 @time_tracking_blueprint.route("/stop_timer", methods=["POST"])
+# Stoppt den Timer, ruft die Logik in time_services auf und gibt Erfolg/Fehler zurück
 def stop_timer_route():
     """
     Stoppt die Zeiterfassung.
