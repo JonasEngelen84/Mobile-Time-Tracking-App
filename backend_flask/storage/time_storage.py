@@ -1,13 +1,14 @@
-import sqlite3
+from backend_flask.utils.db_connection_util import get_db_connection
 from interfaces.time_storage_interface import TimeStorageInterface
 
 class TimeStorage(TimeStorageInterface):
-    """Verbindet sich mit der angegebenen SQLite-Datenbankdatei."""
-    def __init__(self, db_file="zeiterfassung.db"):
-        self.conn = sqlite3.connect(db_file)
+
+    # Öffnet die Verbindung über die zentrale DB-Helper-Funktion
+    def __init__(self):
+        self.conn = get_db_connection()
         self._create_table()
 
-    """Erstellt die Tabelle für Zeiterfassungen, falls sie nicht existiert."""
+    # Erstellt die Tabelle für Zeiterfassungen, falls sie nicht existiert
     def _create_table(self):        
         cursor = self.conn.cursor()
         cursor.execute("""
@@ -21,7 +22,7 @@ class TimeStorage(TimeStorageInterface):
         """)
         self.conn.commit()
 
-    """Speichert einen Zeiteintrag."""
+    # Speichert einen Zeiteintrag
     def save(self, entry: dict):        
         cursor = self.conn.cursor()
         cursor.execute("""
@@ -36,11 +37,9 @@ class TimeStorage(TimeStorageInterface):
         ))
         self.conn.commit()
 
-    """
-    Destruktor – wird aufgerufen, wenn das Objekt gelöscht wird.
-
-    Schließt die Verbindung zur SQLite-Datenbank, um Speicher freizugeben
-    und Datenbankressourcen sauber freizuschalten.
-    """
+    # schließt die DB-Connection
     def __del__(self):
-        self.conn.close()
+        try:
+            self.conn.close()
+        except Exception:
+            pass
