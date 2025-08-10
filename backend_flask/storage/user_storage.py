@@ -6,41 +6,36 @@ from interfaces.user_storage_interface import UserStorageInterface
 
 
 class UserStorage(UserStorageInterface):
-
-    # Öffnet die Verbindung über die zentrale DB-Helper-Funktion
     def __init__(self):
-        self.conn = get_db_connection()
-        self._create_table()
+        self._create_table() # Initial einmalig Tabelle erstellen (eigene Connection pro Aufruf)
 
-    # Erstellt die Tabelle `nutzer`, falls sie noch nicht existiert
+    # Erstellt die Tabelle `user`, falls sie noch nicht existiert.
     def _create_table(self) -> None:
-        cursor = self.conn.cursor()
-        cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS user (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE NOT NULL,
-                password TEXT NOT NULL
-            )
-            """
-        )
-        self.conn.commit()
-
-    # Speichert einen neuen Benutzer
-    def save_user(self, username: str, password: str) -> bool:
-        """
-        Vor dem Einfügen wird das Passwort mit bcrypt gehasht.
-
-        Rückgabewerte:
-        - True  : Benutzer wurde erfolgreich angelegt.
-        - False : Benutzername existiert bereits (IntegrityError).
-        """
+        conn = get_db_connection()
         try:
-            hashed_str = bcrypt.hashpw(
-                password.encode("utf-8"), bcrypt.gensalt()
-            ).decode("utf-8")
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS user (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT UNIQUE NOT NULL,
+                    password TEXT NOT NULL
+                )
+                """
+            )
+            conn.commit()
+        finally:
+            conn.close()
 
-            cursor = self.conn.cursor()
+    # Legt einen neuen Benutzer an (mit bcrypt-gehashtem Passwort).
+    def save_user(self, username: str, password: str) -> bool:
+        hashed_str = bcrypt.hashpw(
+            password.encode("utf-8"), bcrypt.gensalt()
+        ).decode("utf-8")
+
+        conn = get_db_connection()
+        try:
+            cursor = conn.cursor()
             cursor.execute(
                 """
                 INSERT INTO user (username, password)
@@ -48,43 +43,44 @@ class UserStorage(UserStorageInterface):
                 """,
                 (username, hashed_str),
             )
-            self.conn.commit()
+            conn.commit()
             return True
         except sqlite3.IntegrityError:
             return False
+        finally:
+            conn.close()
 
-    # Überprüft, ob Benutzername und Passwort übereinstimmen
+    # Prüft, ob Benutzername und Passwort korrekt sind.
     def auth_user(self, username: str, password: str) -> bool:
-        cursor = self.conn.cursor()
-        cursor.execute(
-            "SELECT password FROM user WHERE username = ?",
-            (username,),
-        )
-        row: Optional[tuple] = cursor.fetchone()
-        if not row:
-            # Benutzer nicht vorhanden
-            return False
+        conn = get_db_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT password FROM user WHERE username = ?",
+                (username,),
+            )
+            row: Optional[tuple] = cursor.fetchone()
+            if not row:
+                return False  # Benutzer nicht vorhanden
 
-        stored = row[0]  # kann str oder bytes sein (je nach DB)
+            stored = row[0]  # str oder bytes möglich
 
-        # Wir brauchen bytes für bcrypt.checkpw
-        if isinstance(stored, bytes):
-            stored_bytes = stored
-        else:
-            stored_bytes = str(stored).encode("utf-8")
+            # Bytes für bcrypt vorbereiten
+            if isinstance(stored, bytes):
+                stored_bytes = stored
+            else:
+                stored_bytes = str(stored).encode("utf-8")
 
-        # Ein bcrypt-Hash beginnt typischerweise mit "$2a$" / "$2b$" / "$2y$"
-        if isinstance(stored, str) and stored.startswith("$2"):
-            # moderner Hash-Fall
-            try:
-                return bcrypt.checkpw(password.encode("utf-8"), stored_bytes)
-            except ValueError:
-                # Ungültiges Hash-Format
-                return False
-        else:
-            # Legacy: gespeichertes Passwort steht im Klartext.
+            # Moderner bcrypt-Hash
+            if isinstance(stored, str) and stored.startswith("$2"):
+                try:
+                    return bcrypt.checkpw(password.encode("utf-8"), stored_bytes)
+                except ValueError:
+                    return False
+
+            # Legacy-Fall: Klartext-Passwort in DB
             if stored == password:
-                # Migration: Klartext akzeptiert -> neuen Hash speichern
+                # Migration: Neues bcrypt-Hash speichern
                 new_hash = bcrypt.hashpw(
                     password.encode("utf-8"), bcrypt.gensalt()
                 ).decode("utf-8")
@@ -92,14 +88,9 @@ class UserStorage(UserStorageInterface):
                     "UPDATE user SET password = ? WHERE username = ?",
                     (new_hash, username),
                 )
-                self.conn.commit()
+                conn.commit()
                 return True
-            else:
-                return False
 
-    # schließt die DB-Connection
-    def __del__(self):
-        try:
-            self.conn.close()
-        except Exception:
-            pass
+            return False
+        finally:
+            conn.close()
