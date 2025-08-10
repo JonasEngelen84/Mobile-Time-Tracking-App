@@ -1,8 +1,8 @@
 import sqlite3
-from interfaces.user_storage_interface import UserStorageInterface
 import bcrypt  # pip install bcrypt
 from typing import Optional
-from backend_flask.utils.db_connection_util import get_db_connection
+from utils.db_connection_util import get_db_connection
+from interfaces.user_storage_interface import UserStorageInterface
 
 
 class UserStorage(UserStorageInterface):
@@ -17,10 +17,10 @@ class UserStorage(UserStorageInterface):
         cursor = self.conn.cursor()
         cursor.execute(
             """
-            CREATE TABLE IF NOT EXISTS nutzer (
+            CREATE TABLE IF NOT EXISTS user (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                benutzername TEXT UNIQUE NOT NULL,
-                passwort TEXT NOT NULL
+                username TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL
             )
             """
         )
@@ -43,7 +43,7 @@ class UserStorage(UserStorageInterface):
             cursor = self.conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO nutzer (benutzername, passwort)
+                INSERT INTO user (username, password)
                 VALUES (?, ?)
                 """,
                 (username, hashed_str),
@@ -57,7 +57,7 @@ class UserStorage(UserStorageInterface):
     def auth_user(self, username: str, password: str) -> bool:
         cursor = self.conn.cursor()
         cursor.execute(
-            "SELECT passwort FROM nutzer WHERE benutzername = ?",
+            "SELECT password FROM user WHERE username = ?",
             (username,),
         )
         row: Optional[tuple] = cursor.fetchone()
@@ -89,7 +89,7 @@ class UserStorage(UserStorageInterface):
                     password.encode("utf-8"), bcrypt.gensalt()
                 ).decode("utf-8")
                 cursor.execute(
-                    "UPDATE nutzer SET passwort = ? WHERE benutzername = ?",
+                    "UPDATE user SET password = ? WHERE username = ?",
                     (new_hash, username),
                 )
                 self.conn.commit()

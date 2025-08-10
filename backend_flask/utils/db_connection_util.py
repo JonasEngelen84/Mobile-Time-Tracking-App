@@ -7,8 +7,9 @@ from pathlib import Path
 
 # Absoluter Pfad zur Datenbankdatei bestimmen
 # Vorteil: Funktioniert auch, wenn das Skript von einem anderen Verzeichnis gestartet wird
+# Die DB beim ersten Verbindungsaufbau automatisch erstellt, wenn sie noch nicht existiert.
 BASE_DIR = Path(__file__).resolve().parent.parent  # -> backend_flask
-DB_PATH = BASE_DIR / "zeiterfassung.db"
+DB_PATH = BASE_DIR / "time_tracking.db"
 
 def get_db_connection() -> sqlite3.Connection:
     """
